@@ -15,14 +15,11 @@ resource.AddWorkshop("3292726511")  -- SWTOR MAP V4 (rp_swtortksv4)
 -- ============================================================
 resource.AddWorkshop("111412589")   -- Star Wars Lightsabers (rb655) — lame 3D, sons, Force
 resource.AddWorkshop("1783090970")  -- 121 Lightsabers SWTOR — poignées supplémentaires
-resource.AddWorkshop("5796532")     -- Rubat Lightsabers — pack complémentaire
 
 -- ============================================================
 --  ANIMATIONS — wOS BASE (GRATUIT)
 -- ============================================================
-resource.AddWorkshop("1778514772")  -- wOS Animation Extension Base — REQUIS
-resource.AddWorkshop("1797055019")  -- Blade Symphony Animations (wOS) — animations combat
-resource.AddWorkshop("2091006906")  -- wOS Jedi/Sith Stances — postures par faction
+resource.AddWorkshop("1730294988")  -- wOS Animation Extension Base — REQUIS
 resource.AddWorkshop("3223650050")  -- ASTRAL SWTOR Animations — animations SWTOR dédiées
 
 -- ============================================================

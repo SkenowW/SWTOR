@@ -56,6 +56,12 @@ hook.Add("HUDShouldDraw", "SWTOR_HideRb655HUD", function(name)
     -- Masquer les éléments HUD par défaut de rb655
     -- qui doubleraient notre HUD custom
     if name == "CHudAmmo" or name == "CHudSecondaryAmmo" then
+        local ply = LocalPlayer()
+        if not IsValid(ply) then return end 
+        
+        local wep = ply:GetActiveWeapon()
+        if not IsValid(wep) then return end
+
         local wep = LocalPlayer():GetActiveWeapon()
         if IsValid(wep) and wep:GetClass() == "weapon_lightsaber" then
             return false
