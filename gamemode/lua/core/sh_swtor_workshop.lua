@@ -8,6 +8,7 @@
 --  2) Ajouter les IDs Workshop dans votre collection Steam
 --     OU dans resource.AddWorkshop() côté serveur
 --  3) Les modèles seront téléchargés automatiquement par les clients
+--  DONE DONT DO IT
 -- ============================================================
 
 -- ============================================================
