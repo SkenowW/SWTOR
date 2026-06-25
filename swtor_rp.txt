@@ -1,9 +1,7 @@
-"gamemodes"
+"swtor_rp"
 {
-	"swtor_rp"
-	{
-		"title"			"SW:TOR RP"
-		"maps"			"rp_"
-		"menusystem"	"1"
-	}
+    "base"          "base"
+    "title"         "SW:TOR RP"
+    "maps"          "^rp_"
+    "menusystem"    "1"
 }

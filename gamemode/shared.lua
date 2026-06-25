@@ -8,67 +8,71 @@ GM.Author  = "SW:TOR RP Team"
 GM.Email   = ""
 GM.Website = ""
 
--- ============================================================
---  FICHIERS PARTAGÉS (client + serveur)
--- ============================================================
-local sharedFiles = {
-    "autorun/sh_swtor_config.lua",
-    "autorun/sh_swtor_factions.lua",
-    "autorun/sh_swtor_planets.lua",
-    "autorun/sh_swtor_classes.lua",
-    "autorun/sh_swtor_shop.lua",
-    "autorun/sh_swtor_combat_dirs.lua",
-    "autorun/sh_swtor_combat_engine.lua",
-    "autorun/sh_swtor_parry.lua",
-    "autorun/sh_swtor_workshop.lua",
-    "autorun/sh_swtor_loot.lua",
-    "autorun/sh_swtor_levels.lua",
-}
+DeriveGamemode("base")
 
+-- ============================================================
+--  CHARGEMENT PARTAGÉ (client + serveur)
+-- ============================================================
+local gm = "gamemodes/swtor_rp/"
+
+local sharedFiles = {
+    "lua/autorun/sh_swtor_config.lua",
+    "lua/autorun/sh_swtor_factions.lua",
+    "lua/autorun/sh_swtor_planets.lua",
+    "lua/autorun/sh_swtor_classes.lua",
+    "lua/autorun/sh_swtor_shop.lua",
+    "lua/autorun/sh_swtor_combat_dirs.lua",
+    "lua/autorun/sh_swtor_combat_engine.lua",
+    "lua/autorun/sh_swtor_parry.lua",
+    "lua/autorun/sh_swtor_workshop.lua",
+    "lua/autorun/sh_swtor_loot.lua",
+    "lua/autorun/sh_swtor_levels.lua",
+}
 for _, f in ipairs(sharedFiles) do
-    if SERVER then AddCSLuaFile(f) end
-    include(f)
+    if SERVER then AddCSLuaFile(gm .. f) end
+    include("../" .. f)
 end
 
 -- ============================================================
---  WEAPONS ET ENTITÉS — envoyer aux clients
+--  WEAPONS, ENTITÉS & FICHIERS CLIENT
 -- ============================================================
 if SERVER then
-    AddCSLuaFile("weapons/swtor_lightsaber/shared.lua")
-    AddCSLuaFile("weapons/swtor_lightsaber_dual/shared.lua")
-    AddCSLuaFile("weapons/swtor_lightsaber_double/shared.lua")
-    AddCSLuaFile("weapons/swtor_vibroblade/shared.lua")
-    AddCSLuaFile("weapons/swtor_blaster/shared.lua")
-    AddCSLuaFile("weapons/swtor_blaster_heavy/shared.lua")
-    AddCSLuaFile("weapons/swtor_blaster_dual/shared.lua")
-    AddCSLuaFile("weapons/swtor_sniper/shared.lua")
-    AddCSLuaFile("entities/swtor_bolt/shared.lua")
-    AddCSLuaFile("entities/swtor_bolt/cl_init.lua")
-
-    -- Déclarer les fichiers clients pour envoi (pas d'include ici)
-    local clientFiles = {
-        "autorun/client/cl_swtor_hud.lua",
-        "autorun/client/cl_swtor_chat.lua",
-        "autorun/client/cl_swtor_effects.lua",
-        "autorun/client/cl_swtor_events.lua",
-        "autorun/client/cl_swtor_faction_menu.lua",
-        "autorun/client/cl_swtor_class_menu.lua",
-        "autorun/client/cl_swtor_abilities_menu.lua",
-        "autorun/client/cl_swtor_stats_menu.lua",
-        "autorun/client/cl_swtor_wardrobe.lua",
-        "autorun/client/cl_swtor_shop.lua",
-        "autorun/client/cl_swtor_application.lua",
-        "autorun/client/cl_swtor_adminpanel.lua",
-        "autorun/client/cl_swtor_combat_engine.lua",
-        "autorun/client/cl_swtor_hrp.lua",
-        "autorun/client/cl_swtor_playerlist.lua",
-        "autorun/client/cl_swtor_spawnconfig.lua",
-        "autorun/client/cl_swtor_rb655.lua",
-        "autorun/client/cl_swtor_loot.lua",
-        "autorun/client/cl_swtor_training.lua",
-        "autorun/client/cl_swtor_swingindicator.lua",
+    local csFiles = {
+        -- Weapons
+        gm .. "lua/weapons/swtor_lightsaber/shared.lua",
+        gm .. "lua/weapons/swtor_lightsaber_dual/shared.lua",
+        gm .. "lua/weapons/swtor_lightsaber_double/shared.lua",
+        gm .. "lua/weapons/swtor_vibroblade/shared.lua",
+        gm .. "lua/weapons/swtor_blaster/shared.lua",
+        gm .. "lua/weapons/swtor_blaster_heavy/shared.lua",
+        gm .. "lua/weapons/swtor_blaster_dual/shared.lua",
+        gm .. "lua/weapons/swtor_sniper/shared.lua",
+        -- Entités
+        gm .. "lua/entities/swtor_bolt/shared.lua",
+        gm .. "lua/entities/swtor_bolt/cl_init.lua",
+        -- Client
+        gm .. "lua/autorun/client/cl_swtor_hud.lua",
+        gm .. "lua/autorun/client/cl_swtor_chat.lua",
+        gm .. "lua/autorun/client/cl_swtor_effects.lua",
+        gm .. "lua/autorun/client/cl_swtor_events.lua",
+        gm .. "lua/autorun/client/cl_swtor_faction_menu.lua",
+        gm .. "lua/autorun/client/cl_swtor_class_menu.lua",
+        gm .. "lua/autorun/client/cl_swtor_abilities_menu.lua",
+        gm .. "lua/autorun/client/cl_swtor_stats_menu.lua",
+        gm .. "lua/autorun/client/cl_swtor_wardrobe.lua",
+        gm .. "lua/autorun/client/cl_swtor_shop.lua",
+        gm .. "lua/autorun/client/cl_swtor_application.lua",
+        gm .. "lua/autorun/client/cl_swtor_adminpanel.lua",
+        gm .. "lua/autorun/client/cl_swtor_combat_engine.lua",
+        gm .. "lua/autorun/client/cl_swtor_hrp.lua",
+        gm .. "lua/autorun/client/cl_swtor_playerlist.lua",
+        gm .. "lua/autorun/client/cl_swtor_spawnconfig.lua",
+        gm .. "lua/autorun/client/cl_swtor_rb655.lua",
+        gm .. "lua/autorun/client/cl_swtor_loot.lua",
+        gm .. "lua/autorun/client/cl_swtor_training.lua",
+        gm .. "lua/autorun/client/cl_swtor_swingindicator.lua",
     }
-    for _, f in ipairs(clientFiles) do AddCSLuaFile(f) end
+    for _, f in ipairs(csFiles) do AddCSLuaFile(f) end
 end
 
 -- ============================================================

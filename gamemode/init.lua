@@ -10,32 +10,31 @@ include("shared.lua")
 --  CHARGEMENT SERVEUR DANS L'ORDRE
 -- ============================================================
 local serverFiles = {
-    "autorun/server/sv_swtor_database.lua",
-    "autorun/server/sv_swtor_combat.lua",
-    "autorun/server/sv_swtor_combat_engine.lua",
-    "autorun/server/sv_swtor_abilities.lua",
-    "autorun/server/sv_swtor_map.lua",
-    "autorun/server/sv_swtor_models.lua",
-    "autorun/server/sv_swtor_shop.lua",
-    "autorun/server/sv_swtor_chat.lua",
-    "autorun/server/sv_swtor_adminpanel.lua",
-    "autorun/server/sv_swtor_applications.lua",
-    "autorun/server/sv_swtor_entities.lua",
-    "autorun/server/sv_swtor_npcs.lua",
-    "autorun/server/sv_swtor_events.lua",
-    "autorun/server/sv_swtor_adminnet.lua",
-    "autorun/server/sv_swtor_swinglabel.lua",
-    "autorun/server/sv_swtor_rb655.lua",
-    "autorun/server/sv_swtor_hrp.lua",
-    "autorun/server/sv_swtor_spawnconfig.lua",
-    "autorun/server/sv_swtor_loot.lua",
-    "autorun/server/sv_swtor_duels.lua",
-    "autorun/server/sv_swtor_training.lua",
-    "autorun/server/sv_workshop.lua",
+    "lua/autorun/server/sv_swtor_database.lua",
+    "lua/autorun/server/sv_swtor_combat.lua",
+    "lua/autorun/server/sv_swtor_combat_engine.lua",
+    "lua/autorun/server/sv_swtor_abilities.lua",
+    "lua/autorun/server/sv_swtor_map.lua",
+    "lua/autorun/server/sv_swtor_models.lua",
+    "lua/autorun/server/sv_swtor_shop.lua",
+    "lua/autorun/server/sv_swtor_chat.lua",
+    "lua/autorun/server/sv_swtor_adminpanel.lua",
+    "lua/autorun/server/sv_swtor_applications.lua",
+    "lua/autorun/server/sv_swtor_entities.lua",
+    "lua/autorun/server/sv_swtor_npcs.lua",
+    "lua/autorun/server/sv_swtor_events.lua",
+    "lua/autorun/server/sv_swtor_adminnet.lua",
+    "lua/autorun/server/sv_swtor_swinglabel.lua",
+    "lua/autorun/server/sv_swtor_rb655.lua",
+    "lua/autorun/server/sv_swtor_hrp.lua",
+    "lua/autorun/server/sv_swtor_spawnconfig.lua",
+    "lua/autorun/server/sv_swtor_loot.lua",
+    "lua/autorun/server/sv_swtor_duels.lua",
+    "lua/autorun/server/sv_swtor_training.lua",
+    "lua/autorun/server/sv_workshop.lua",
 }
-
 for _, f in ipairs(serverFiles) do
-    include(f)
+    include("../" .. f)
 end
 
 -- ============================================================

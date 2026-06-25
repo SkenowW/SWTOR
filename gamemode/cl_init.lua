@@ -6,42 +6,44 @@
 include("shared.lua")
 
 -- ============================================================
---  CHARGEMENT CLIENT
+--  CHARGEMENT CLIENT DANS L'ORDRE
 -- ============================================================
 local clientFiles = {
-    "autorun/client/cl_swtor_hud.lua",
-    "autorun/client/cl_swtor_chat.lua",
-    "autorun/client/cl_swtor_effects.lua",
-    "autorun/client/cl_swtor_events.lua",
-    "autorun/client/cl_swtor_faction_menu.lua",
-    "autorun/client/cl_swtor_class_menu.lua",
-    "autorun/client/cl_swtor_abilities_menu.lua",
-    "autorun/client/cl_swtor_stats_menu.lua",
-    "autorun/client/cl_swtor_wardrobe.lua",
-    "autorun/client/cl_swtor_swingindicator.lua",
-    "autorun/client/cl_swtor_combat_engine.lua",
-    "autorun/client/cl_swtor_rb655.lua",
-    "autorun/client/cl_swtor_hrp.lua",
-    "autorun/client/cl_swtor_playerlist.lua",
-    "autorun/client/cl_swtor_spawnconfig.lua",
-    "autorun/client/cl_swtor_loot.lua",
-    "autorun/client/cl_swtor_shop.lua",
-    "autorun/client/cl_swtor_application.lua",
-    "autorun/client/cl_swtor_adminpanel.lua",
-    "autorun/client/cl_swtor_training.lua",
+    "lua/autorun/client/cl_swtor_hud.lua",
+    "lua/autorun/client/cl_swtor_chat.lua",
+    "lua/autorun/client/cl_swtor_effects.lua",
+    "lua/autorun/client/cl_swtor_events.lua",
+    "lua/autorun/client/cl_swtor_faction_menu.lua",
+    "lua/autorun/client/cl_swtor_class_menu.lua",
+    "lua/autorun/client/cl_swtor_abilities_menu.lua",
+    "lua/autorun/client/cl_swtor_stats_menu.lua",
+    "lua/autorun/client/cl_swtor_wardrobe.lua",
+    "lua/autorun/client/cl_swtor_swingindicator.lua",
+    "lua/autorun/client/cl_swtor_combat_engine.lua",
+    "lua/autorun/client/cl_swtor_rb655.lua",
+    "lua/autorun/client/cl_swtor_hrp.lua",
+    "lua/autorun/client/cl_swtor_playerlist.lua",
+    "lua/autorun/client/cl_swtor_spawnconfig.lua",
+    "lua/autorun/client/cl_swtor_loot.lua",
+    "lua/autorun/client/cl_swtor_shop.lua",
+    "lua/autorun/client/cl_swtor_application.lua",
+    "lua/autorun/client/cl_swtor_adminpanel.lua",
+    "lua/autorun/client/cl_swtor_training.lua",
 }
-
 for _, f in ipairs(clientFiles) do
-    include(f)
+    include("../" .. f)
 end
 
 -- ============================================================
---  HOOKS VISUELS
+--  HOOKS VISUELS GAMEMODE
 -- ============================================================
+
+-- Fond de chargement custom
 function GM:LoadingScreen()
     return "swtor_loading"
 end
 
+-- Mort — écran noir cinématique
 local DeathScreen = false
 local DeathTime   = 0
 
@@ -59,9 +61,11 @@ hook.Add("HUDPaint", "SWTOR_DeathOverlay", function()
     local remaining = math.ceil(respawnCD - elapsed)
     local alpha     = math.min(elapsed * 80, 200)
 
+    -- Fond noir
     surface.SetDrawColor(0, 0, 0, alpha)
     surface.DrawRect(0, 0, ScrW(), ScrH())
 
+    -- Texte
     draw.SimpleText("VOUS ÊTES MORT", "SWTOR_HUD_Title",
         ScrW()/2, ScrH()/2 - 30,
         Color(220, 50, 50, alpha), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
@@ -75,9 +79,10 @@ hook.Add("PlayerSpawn", "SWTOR_ClearDeathScreen", function()
 end)
 
 -- ============================================================
---  NET — touches F1/F3/F4
+--  TOUCHES F1/F3/F4 — ouvertures menus
 -- ============================================================
 net.Receive("SWTOR_OpenHelp", function()
+    -- Afficher l'aide dans le chat
     chat.AddText(Color(100,180,255), "══ Commandes SW:TOR RP ══")
     local cmds = {
         {"swtor_abilities","Q / Abilities — Pouvoirs de votre classe"},
@@ -110,10 +115,11 @@ net.Receive("SWTOR_OpenProfile", function()
 end)
 
 -- ============================================================
---  BINDS CLAVIER
+--  CHAT COMMANDS BINDS CLAVIER
 -- ============================================================
 hook.Add("PlayerBindPress", "SWTOR_KeyBinds", function(ply, bind, pressed)
     if not pressed then return end
+    -- Q = menu abilities
     if bind == "+menu_context" then
         RunConsoleCommand("swtor_abilities")
         return true
