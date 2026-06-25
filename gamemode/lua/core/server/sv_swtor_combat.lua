@@ -117,10 +117,26 @@ end)
 -- ============================================================
 --  RESPAWN AUTOMATIQUE
 -- ============================================================
+-- ============================================================
+--  RESPAWN AUTOMATIQUE
+-- ============================================================
 hook.Add("PlayerDeathThink", "SWTOR_AutoRespawn", function(ply)
-    if not ply:Alive() and ply:TimeOfDeath() + SWTOR.Config.RespawnTime <= CurTime() then
-        ply:Spawn()
+    -- On bloque le respawn manuel (clic) pendant le délai
+    if ply.NextSpawnTime and ply.NextSpawnTime > CurTime() then
+        return false 
     end
+
+    -- Si le délai est passé, on laisse le joueur spawn
+    if ply.NextSpawnTime and ply.NextSpawnTime <= CurTime() then
+        ply:Spawn()
+        return true
+    end
+end)
+
+-- Il faut définir NextSpawnTime au moment où le joueur meurt
+hook.Add("PlayerDeath", "SWTOR_SetRespawnTimer", function(ply)
+    local respawnDelay = SWTOR.Config and SWTOR.Config.RespawnTime or 10 -- 10 sec par défaut
+    ply.NextSpawnTime = CurTime() + respawnDelay
 end)
 
 -- ============================================================
