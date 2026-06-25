@@ -4,6 +4,13 @@
 -- ============================================================
 
 include("shared.lua")
+-- Patch pour l'addon de chat du Workshop
+surface.CreateFont("sw_ui_14_shadow", {
+    font = "Roboto", 
+    size = 14,
+    weight = 500,
+    shadow = true,
+})
 -- ============================================================
 --  CHARGEMENT CLIENT DANS L'ORDRE
 -- ============================================================
