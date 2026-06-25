@@ -23,11 +23,7 @@ local function RequestPlayerList()
 end
 
 local function OpenAdminPanel()
-    local ply = LocalPlayer()
-    local isFondateur = (ply.swtor_hrp == "fondateur") or (ply:GetNWString("swtor_hrp", "") == "fondateur")
-    
-    -- Le client bloque l'ouverture seulement si on n'est ni Admin ni Fondateur
-    if not ply:IsAdmin() and not isFondateur then
+    if not LocalPlayer():IsAdmin() then
         chat.AddText(Color(220,80,80), "[SW:TOR] Accès refusé — Admin requis.")
         return
     end
