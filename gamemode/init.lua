@@ -3,39 +3,43 @@
 --  gamemode/init.lua
 -- ============================================================
 
-AddCSLuaFile("cl_init.lua")
 include("shared.lua")
+AddCSLuaFile("cl_init.lua")
+AddCSLuaFile("shared.lua")
 
 -- ============================================================
 --  CHARGEMENT SERVEUR DANS L'ORDRE
 -- ============================================================
 local serverFiles = {
-    "lua/autorun/server/sv_swtor_database.lua",
-    "lua/autorun/server/sv_swtor_combat.lua",
-    "lua/autorun/server/sv_swtor_combat_engine.lua",
-    "lua/autorun/server/sv_swtor_abilities.lua",
-    "lua/autorun/server/sv_swtor_map.lua",
-    "lua/autorun/server/sv_swtor_models.lua",
-    "lua/autorun/server/sv_swtor_shop.lua",
-    "lua/autorun/server/sv_swtor_chat.lua",
-    "lua/autorun/server/sv_swtor_adminpanel.lua",
-    "lua/autorun/server/sv_swtor_applications.lua",
-    "lua/autorun/server/sv_swtor_entities.lua",
-    "lua/autorun/server/sv_swtor_npcs.lua",
-    "lua/autorun/server/sv_swtor_events.lua",
-    "lua/autorun/server/sv_swtor_adminnet.lua",
-    "lua/autorun/server/sv_swtor_swinglabel.lua",
-    "lua/autorun/server/sv_swtor_rb655.lua",
-    "lua/autorun/server/sv_swtor_hrp.lua",
-    "lua/autorun/server/sv_swtor_spawnconfig.lua",
-    "lua/autorun/server/sv_swtor_loot.lua",
-    "lua/autorun/server/sv_swtor_duels.lua",
-    "lua/autorun/server/sv_swtor_training.lua",
-    "lua/autorun/server/sv_workshop.lua",
+    "lua/core/server/sv_swtor_database.lua",
+    "lua/core/server/sv_swtor_combat.lua",
+    "lua/core/server/sv_swtor_combat_engine.lua",
+    "lua/core/server/sv_swtor_abilities.lua",
+    "lua/core/server/sv_swtor_map.lua",
+    "lua/core/server/sv_swtor_models.lua",
+    "lua/core/server/sv_swtor_shop.lua",
+    "lua/core/server/sv_swtor_chat.lua",
+    "lua/core/server/sv_swtor_adminpanel.lua",
+    "lua/core/server/sv_swtor_applications.lua",
+    "lua/core/server/sv_swtor_entities.lua",
+    "lua/core/server/sv_swtor_npcs.lua",
+    "lua/core/server/sv_swtor_events.lua",
+    "lua/core/server/sv_swtor_adminnet.lua",
+    "lua/core/server/sv_swtor_swinglabel.lua",
+    "lua/core/server/sv_swtor_rb655.lua",
+    "lua/core/server/sv_swtor_hrp.lua",
+    "lua/core/server/sv_swtor_spawnconfig.lua",
+    "lua/core/server/sv_swtor_loot.lua",
+    "lua/core/server/sv_swtor_duels.lua",
+    "lua/core/server/sv_swtor_training.lua",
+    "lua/core/server/sv_workshop.lua",
 }
+local count = 0
 for _, f in ipairs(serverFiles) do
-    include("../" .. f)
+    include(f)
+    count = count + 1
 end
+print("[SW:TOR RP DEBUG] " .. count .. " fichiers serveur chargés avec succès.")
 
 -- ============================================================
 --  HOOKS GAMEMODE SERVEUR

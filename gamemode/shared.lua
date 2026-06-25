@@ -13,25 +13,28 @@ DeriveGamemode("base")
 -- ============================================================
 --  CHARGEMENT PARTAGÉ (client + serveur)
 -- ============================================================
-local gm = "gamemodes/swtor_rp/"
-
 local sharedFiles = {
-    "lua/autorun/sh_swtor_config.lua",
-    "lua/autorun/sh_swtor_factions.lua",
-    "lua/autorun/sh_swtor_planets.lua",
-    "lua/autorun/sh_swtor_classes.lua",
-    "lua/autorun/sh_swtor_shop.lua",
-    "lua/autorun/sh_swtor_combat_dirs.lua",
-    "lua/autorun/sh_swtor_combat_engine.lua",
-    "lua/autorun/sh_swtor_parry.lua",
-    "lua/autorun/sh_swtor_workshop.lua",
-    "lua/autorun/sh_swtor_loot.lua",
-    "lua/autorun/sh_swtor_levels.lua",
+    "lua/core/sh_swtor_config.lua",
+    "lua/core/sh_swtor_factions.lua",
+    "lua/core/sh_swtor_planets.lua",
+    "lua/core/sh_swtor_classes.lua",
+    "lua/core/sh_swtor_shop.lua",
+    "lua/core/sh_swtor_combat_dirs.lua",
+    "lua/core/sh_swtor_combat_engine.lua",
+    "lua/core/sh_swtor_parry.lua",
+    "lua/core/sh_swtor_workshop.lua",
+    "lua/core/sh_swtor_loot.lua",
+    "lua/core/sh_swtor_levels.lua",
 }
+
+
+local count = 0
 for _, f in ipairs(sharedFiles) do
-    if SERVER then AddCSLuaFile(gm .. f) end
-    include("../" .. f)
+    if SERVER then AddCSLuaFile(f) end
+    include(f)
+    count = count + 1
 end
+print("[SW:TOR RP DEBUG] " .. count .. " fichiers partagés chargés avec succès.")
 
 -- ============================================================
 --  WEAPONS, ENTITÉS & FICHIERS CLIENT
@@ -39,40 +42,45 @@ end
 if SERVER then
     local csFiles = {
         -- Weapons
-        gm .. "lua/weapons/swtor_lightsaber/shared.lua",
-        gm .. "lua/weapons/swtor_lightsaber_dual/shared.lua",
-        gm .. "lua/weapons/swtor_lightsaber_double/shared.lua",
-        gm .. "lua/weapons/swtor_vibroblade/shared.lua",
-        gm .. "lua/weapons/swtor_blaster/shared.lua",
-        gm .. "lua/weapons/swtor_blaster_heavy/shared.lua",
-        gm .. "lua/weapons/swtor_blaster_dual/shared.lua",
-        gm .. "lua/weapons/swtor_sniper/shared.lua",
+        "lua/weapons/swtor_lightsaber/shared.lua",
+        "lua/weapons/swtor_lightsaber_dual/shared.lua",
+        "lua/weapons/swtor_lightsaber_double/shared.lua",
+        "lua/weapons/swtor_vibroblade/shared.lua",
+        "lua/weapons/swtor_blaster/shared.lua",
+        "lua/weapons/swtor_blaster_heavy/shared.lua",
+        "lua/weapons/swtor_blaster_dual/shared.lua",
+        "lua/weapons/swtor_sniper/shared.lua",
         -- Entités
-        gm .. "lua/entities/swtor_bolt/shared.lua",
-        gm .. "lua/entities/swtor_bolt/cl_init.lua",
+        "lua/entities/swtor_bolt/shared.lua",
+        "lua/entities/swtor_bolt/cl_init.lua",
         -- Client
-        gm .. "lua/autorun/client/cl_swtor_hud.lua",
-        gm .. "lua/autorun/client/cl_swtor_chat.lua",
-        gm .. "lua/autorun/client/cl_swtor_effects.lua",
-        gm .. "lua/autorun/client/cl_swtor_events.lua",
-        gm .. "lua/autorun/client/cl_swtor_faction_menu.lua",
-        gm .. "lua/autorun/client/cl_swtor_class_menu.lua",
-        gm .. "lua/autorun/client/cl_swtor_abilities_menu.lua",
-        gm .. "lua/autorun/client/cl_swtor_stats_menu.lua",
-        gm .. "lua/autorun/client/cl_swtor_wardrobe.lua",
-        gm .. "lua/autorun/client/cl_swtor_shop.lua",
-        gm .. "lua/autorun/client/cl_swtor_application.lua",
-        gm .. "lua/autorun/client/cl_swtor_adminpanel.lua",
-        gm .. "lua/autorun/client/cl_swtor_combat_engine.lua",
-        gm .. "lua/autorun/client/cl_swtor_hrp.lua",
-        gm .. "lua/autorun/client/cl_swtor_playerlist.lua",
-        gm .. "lua/autorun/client/cl_swtor_spawnconfig.lua",
-        gm .. "lua/autorun/client/cl_swtor_rb655.lua",
-        gm .. "lua/autorun/client/cl_swtor_loot.lua",
-        gm .. "lua/autorun/client/cl_swtor_training.lua",
-        gm .. "lua/autorun/client/cl_swtor_swingindicator.lua",
+        "lua/core/client/cl_swtor_hud.lua",
+        "lua/core/client/cl_swtor_chat.lua",
+        "lua/core/client/cl_swtor_effects.lua",
+        "lua/core/client/cl_swtor_events.lua",
+        "lua/core/client/cl_swtor_faction_menu.lua",
+        "lua/core/client/cl_swtor_class_menu.lua",
+        "lua/core/client/cl_swtor_abilities_menu.lua",
+        "lua/core/client/cl_swtor_stats_menu.lua",
+        "lua/core/client/cl_swtor_wardrobe.lua",
+        "lua/core/client/cl_swtor_shop.lua",
+        "lua/core/client/cl_swtor_application.lua",
+        "lua/core/client/cl_swtor_adminpanel.lua",
+        "lua/core/client/cl_swtor_combat_engine.lua",
+        "lua/core/client/cl_swtor_hrp.lua",
+        "lua/core/client/cl_swtor_playerlist.lua",
+        "lua/core/client/cl_swtor_spawnconfig.lua",
+        "lua/core/client/cl_swtor_rb655.lua",
+        "lua/core/client/cl_swtor_loot.lua",
+        "lua/core/client/cl_swtor_training.lua",
+        "lua/core/client/cl_swtor_swingindicator.lua",
     }
-    for _, f in ipairs(csFiles) do AddCSLuaFile(f) end
+    local count = 0
+    for _, f in ipairs(csFiles) do 
+        AddCSLuaFile(f) 
+        count = count + 1
+    end
+    print("[SW:TOR RP DEBUG] " .. count .. " fichiers client/entités/weapons chargés avec succès.")
 end
 
 -- ============================================================

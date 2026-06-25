@@ -4,35 +4,37 @@
 -- ============================================================
 
 include("shared.lua")
-
 -- ============================================================
 --  CHARGEMENT CLIENT DANS L'ORDRE
 -- ============================================================
 local clientFiles = {
-    "lua/autorun/client/cl_swtor_hud.lua",
-    "lua/autorun/client/cl_swtor_chat.lua",
-    "lua/autorun/client/cl_swtor_effects.lua",
-    "lua/autorun/client/cl_swtor_events.lua",
-    "lua/autorun/client/cl_swtor_faction_menu.lua",
-    "lua/autorun/client/cl_swtor_class_menu.lua",
-    "lua/autorun/client/cl_swtor_abilities_menu.lua",
-    "lua/autorun/client/cl_swtor_stats_menu.lua",
-    "lua/autorun/client/cl_swtor_wardrobe.lua",
-    "lua/autorun/client/cl_swtor_swingindicator.lua",
-    "lua/autorun/client/cl_swtor_combat_engine.lua",
-    "lua/autorun/client/cl_swtor_rb655.lua",
-    "lua/autorun/client/cl_swtor_hrp.lua",
-    "lua/autorun/client/cl_swtor_playerlist.lua",
-    "lua/autorun/client/cl_swtor_spawnconfig.lua",
-    "lua/autorun/client/cl_swtor_loot.lua",
-    "lua/autorun/client/cl_swtor_shop.lua",
-    "lua/autorun/client/cl_swtor_application.lua",
-    "lua/autorun/client/cl_swtor_adminpanel.lua",
-    "lua/autorun/client/cl_swtor_training.lua",
+    "lua/core/client/cl_swtor_hud.lua",
+    "lua/core/client/cl_swtor_chat.lua",
+    "lua/core/client/cl_swtor_effects.lua",
+    "lua/core/client/cl_swtor_events.lua",
+    "lua/core/client/cl_swtor_faction_menu.lua",
+    "lua/core/client/cl_swtor_class_menu.lua",
+    "lua/core/client/cl_swtor_abilities_menu.lua",
+    "lua/core/client/cl_swtor_stats_menu.lua",
+    "lua/core/client/cl_swtor_wardrobe.lua",
+    "lua/core/client/cl_swtor_swingindicator.lua",
+    "lua/core/client/cl_swtor_combat_engine.lua",
+    "lua/core/client/cl_swtor_rb655.lua",
+    "lua/core/client/cl_swtor_hrp.lua",
+    "lua/core/client/cl_swtor_playerlist.lua",
+    "lua/core/client/cl_swtor_spawnconfig.lua",
+    "lua/core/client/cl_swtor_loot.lua",
+    "lua/core/client/cl_swtor_shop.lua",
+    "lua/core/client/cl_swtor_application.lua",
+    "lua/core/client/cl_swtor_adminpanel.lua",
+    "lua/core/client/cl_swtor_training.lua",
 }
+local count = 0
 for _, f in ipairs(clientFiles) do
-    include("../" .. f)
+    include(f)
+    count = count + 1
 end
+print("[SW:TOR RP DEBUG] " .. count .. " fichiers client chargés avec succès.")
 
 -- ============================================================
 --  HOOKS VISUELS GAMEMODE
