@@ -87,12 +87,6 @@ function GM:PlayerDisconnected(ply)
     SWTOR.SavePlayer(ply)
 end
 
-function GM:PlayerDeath(victim, inflictor, attacker)
-    -- Respawn auto après délai config
-    timer.Simple(SWTOR.Config.RespawnTime, function()
-        if IsValid(victim) then victim:Spawn() end
-    end)
-end
 
 function GM:PlayerDeathThink(ply)
     -- Bloquer le respawn manuel — géré par timer
