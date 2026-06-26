@@ -188,6 +188,12 @@ util.AddNetworkString("SWTOR_Notification")
 util.AddNetworkString("SWTOR_SetClass")
 
 function SWTOR.SyncPlayerData(ply)
+    -- L'arme fatale : On force le moteur de GMod à synchroniser ces variables nativement
+    ply:SetNWString("swtor_faction", ply.swtor_faction or "")
+    ply:SetNWString("swtor_class", ply.swtor_class or "")
+    ply:SetNWInt("swtor_grade", ply.swtor_grade or 1)
+
+    -- On garde le système d'origine au cas où d'autres scripts en auraient besoin
     net.Start("SWTOR_SyncData")
         net.WriteString(ply.swtor_faction     or "")
         net.WriteString(ply.swtor_class       or "")
@@ -234,7 +240,7 @@ function SWTOR.SetFaction(ply, factionKey)
     end
     ply.swtor_faction = factionKey
     ply.swtor_grade   = 1
-    ply.swtor_class   = ""  -- Classe à choisir après
+    ply.swtor_class   = ""
 
     local gradeInfo = SWTOR.GetGrade(factionKey, 1)
     if gradeInfo and gradeInfo.models and #gradeInfo.models > 0 then
@@ -244,11 +250,22 @@ function SWTOR.SetFaction(ply, factionKey)
 
     SWTOR.SavePlayer(ply)
     SWTOR.SyncPlayerData(ply)
-    SWTOR.Notify(ply, "Faction rejointe: " .. SWTOR.Factions[factionKey].name .. " — Choisissez votre classe !", "success")
+    
+    -- On affiche le message de succès de manière forcée dans le chat
+    ply:PrintMessage(HUD_PRINTTALK, "[SW:TOR] Faction rejointe : " .. SWTOR.Factions[factionKey].name .. " — Choisissez votre classe !")
 
-    -- Demander au client d'ouvrir le menu de classe
-    net.Start("SWTOR_OpenClassMenu")
-    net.Send(ply)
+    -- On attend une demi-seconde pour que le réseau fasse son travail
+    timer.Simple(0.5, function()
+        if IsValid(ply) then
+            -- Patch d'urgence : on met à jour les tables client de force avant d'ouvrir le menu
+            ply:SendLua("LocalPlayer().swtor_faction = '" .. factionKey .. "'")
+            ply:SendLua("LocalData = LocalData or {} LocalData.faction = '" .. factionKey .. "'")
+            
+            -- Au lieu d'un net message, on simule l'exécution de la commande par le joueur
+            ply:ConCommand("swtor_class_menu")
+        end
+    end)
+    
     return true
 end
 
