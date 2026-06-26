@@ -369,7 +369,10 @@ net.Receive("SWTOR_HRPNoclip", function(len, ply)
     if not SWTOR.HRP.HasPerm(ply, "noclip") then
         SWTOR.Notify(ply, "Permission refusée — noclip.", "error") return
     end
-    local state = not ply:GetMoveType() == MOVETYPE_NOCLIP
+    
+    -- CORRECTION ICI : On utilise ~= (différent de) pour que le calcul soit parfait
+    local state = ply:GetMoveType() ~= MOVETYPE_NOCLIP
+    
     ply:SetMoveType(state and MOVETYPE_NOCLIP or MOVETYPE_WALK)
     SWTOR.Notify(ply, state and "✈ Vol activé" or "✈ Vol désactivé", "info")
 end)
