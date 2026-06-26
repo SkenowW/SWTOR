@@ -246,9 +246,14 @@ function SWTOR.SetFaction(ply, factionKey)
     SWTOR.SyncPlayerData(ply)
     SWTOR.Notify(ply, "Faction rejointe: " .. SWTOR.Factions[factionKey].name .. " — Choisissez votre classe !", "success")
 
-    -- Demander au client d'ouvrir le menu de classe
-    net.Start("SWTOR_OpenClassMenu")
-    net.Send(ply)
+    -- DÉLAI AJOUTÉ ICI : On attend 0.2s pour que le client ait bien reçu sa nouvelle faction
+    timer.Simple(0.2, function()
+        if IsValid(ply) then
+            net.Start("SWTOR_OpenClassMenu")
+            net.Send(ply)
+        end
+    end)
+    
     return true
 end
 
