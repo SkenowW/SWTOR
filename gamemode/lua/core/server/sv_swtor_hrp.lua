@@ -211,6 +211,11 @@ function SWTOR.HRP.SetRank(target, rank, setter)
     if rank == "none" or rank == "" then
         HRPData[sid] = nil
         sql.Query("DELETE FROM swtor_hrp WHERE steamid = " .. sql.SQLStr(sid))
+        
+        -- MAJ Réseau : on efface le grade du joueur
+        target.swtor_hrp = nil
+        target:SetNWString("swtor_hrp", "")
+        
         SWTOR.HRP.SyncToClient(target, nil)
         SWTOR.Notify(target, "Votre grade HRP a été retiré.", "info")
         if IsValid(setter) then
@@ -225,6 +230,11 @@ function SWTOR.HRP.SetRank(target, rank, setter)
 
     HRPData[sid] = rank
     SaveHRPRank(sid, rank, IsValid(setter) and setter:Nick() or "Console")
+    
+    -- MAJ RÉSEAU CRUCIALE ICI : 
+    target.swtor_hrp = rank
+    target:SetNWString("swtor_hrp", rank)
+    
     SWTOR.HRP.SyncToClient(target, rank)
 
     local rankData = SWTOR.HRP.Ranks[rank]

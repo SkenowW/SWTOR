@@ -1,22 +1,36 @@
 -- ============================================================
---  SW:TOR RP — GRADES HRP CLIENT
+--  SW:TOR RP — GRADES HRP CLIENT (CORRIGÉ)
 --  lua/autorun/client/cl_swtor_hrp.lua
---  Affichage dans le scoreboard, panel admin, toolbar HRP
 -- ============================================================
 
 if SERVER then return end
 
+SWTOR = SWTOR or {}
+SWTOR.HRP = SWTOR.HRP or {}
+
+-- ============================================================
+--  TABLES DE CONFIGURATION (Copiées du serveur)
+-- ============================================================
+SWTOR.HRP.Ranks = {
+    fondateur    = { level=5, label="Fondateur",     color=Color(255,50,50),    tag="[FONDATEUR]"    },
+    responsable  = { level=4, label="Responsable",   color=Color(220,80,20),    tag="[RESPONSABLE]"  },
+    administrateur={ level=3, label="Administrateur",color=Color(220,150,0),    tag="[ADMIN]"        },
+    moderateur   = { level=2, label="Modérateur",    color=Color(80,160,255),   tag="[MOD]"          },
+    animateur    = { level=1, label="Animateur",     color=Color(80,220,130),   tag="[ANIMATEUR]"    },
+}
+
+SWTOR.HRP.Permissions = {
+    fondateur = { noclip=true, invisible=true, god=true, logs=true, props=true, set_hrp=true },
+    responsable = { noclip=true, invisible=true, god=true, logs=true, props=true, set_hrp=true },
+    administrateur = { noclip=true, invisible=true, god=true, logs=true, props=true, set_hrp=false },
+    moderateur = { noclip=false, invisible=true, god=false, logs=true, props=false, set_hrp=false },
+    animateur = { noclip=true, invisible=true, god=true, logs=false, props=true, set_hrp=false },
+}
+
 -- ============================================================
 --  DONNÉES HRP LOCALES
 -- ============================================================
-local MyRank       = nil   -- Rang du joueur local
 local PlayerRanks  = {}    -- [entIndex] = rankKey
-
--- Réception de son propre grade
-net.Receive("SWTOR_HRPUpdate", function()
-    MyRank = net.ReadString()
-    if MyRank == "" then MyRank = nil end
-end)
 
 -- Réception des grades des autres joueurs
 net.Receive("SWTOR_HRPSync", function()
@@ -26,11 +40,17 @@ net.Receive("SWTOR_HRPSync", function()
 end)
 
 -- ============================================================
---  GETTERS CLIENT
+--  GETTERS CLIENT AVEC RÉSEAU
 -- ============================================================
+local function GetMyRank()
+    -- On force la lecture de la donnée réseau la plus récente
+    local rank = LocalPlayer():GetNWString("swtor_hrp", "")
+    return (rank ~= "") and rank or nil
+end
+
 local function GetRankData(rankKey)
-    if not rankKey or not SWTOR or not SWTOR.HRP then return nil end
-    return SWTOR.HRP.Ranks and SWTOR.HRP.Ranks[rankKey]
+    if not rankKey then return nil end
+    return SWTOR.HRP.Ranks[rankKey]
 end
 
 local function GetPlayerRankData(ply)
@@ -40,22 +60,20 @@ local function GetPlayerRankData(ply)
 end
 
 local function HasPerm(perm)
-    if not MyRank or not SWTOR or not SWTOR.HRP then return false end
-    local perms = SWTOR.HRP.Permissions and SWTOR.HRP.Permissions[MyRank]
+    local rank = GetMyRank()
+    if not rank then return false end
+    local perms = SWTOR.HRP.Permissions[rank]
     return perms and perms[perm] == true
 end
 
--- Tags HRP désactivés (visibles uniquement dans le panel F2)
 
 -- ============================================================
 --  TOOLBAR HRP (barre d'outils en jeu pour les modérateurs+)
 -- ============================================================
-local ToolbarOpen = false
-local ToolbarY    = 0  -- Animation slide
-
 hook.Add("HUDPaint", "SWTOR_HRPToolbar", function()
-    if not MyRank then return end
-    local rd = GetRankData(MyRank)
+    local myRank = GetMyRank()
+    if not myRank then return end
+    local rd = GetRankData(myRank)
     if not rd then return end
 
     local sw, sh = ScrW(), ScrH()
@@ -104,15 +122,24 @@ hook.Add("HUDPaint", "SWTOR_HRPToolbar", function()
 end)
 
 -- Clic sur la toolbar
-hook.Add("GUIMousePressed", "SWTOR_HRPToolbarClick", function(key, x, y)
-    if not MyRank then return end
-    local rd = GetRankData(MyRank)
-    if not rd then return end
+-- Clic sur la toolbar
+hook.Add("GUIMousePressed", "SWTOR_HRPToolbarClick", function(mouseCode)
+    -- On réagit uniquement au clic gauche
+    if mouseCode ~= MOUSE_LEFT then return end
+
+    local myRank = GetMyRank()
+    if not myRank then return end
 
     local sw, sh = ScrW(), ScrH()
     local barH   = 40
     local by     = sh - barH
-    if y < by then return end
+    
+    -- On récupère les vraies coordonnées de la souris
+    local mouseX = gui.MouseX()
+    local mouseY = gui.MouseY()
+    
+    -- Si on clique au-dessus de la barre, on ignore
+    if mouseY < by then return end
 
     local buttons = {}
     if HasPerm("noclip")    then table.insert(buttons, {icon="✈", label="Vol",        net="SWTOR_HRPNoclip"   }) end
@@ -126,7 +153,7 @@ hook.Add("GUIMousePressed", "SWTOR_HRPToolbarClick", function(key, x, y)
 
     for i, btn in ipairs(buttons) do
         local bx = startX + (i-1)*(btnW+4)
-        if x > bx and x < bx+btnW then
+        if mouseX > bx and mouseX < bx+btnW then
             if btn.net then
                 net.Start(btn.net)
                 net.SendToServer()
@@ -146,7 +173,6 @@ local LogsData = {}
 
 net.Receive("SWTOR_HRPLogsData", function()
     LogsData = util.JSONToTable(net.ReadString()) or {}
-    -- Afficher le panel
     OpenLogsPanel()
 end)
 
@@ -258,23 +284,26 @@ concommand.Add("swtor_hrp_panel", function()
 
         -- Combo grade
         local combo = vgui.Create("DComboBox", row)
-        combo:SetPos(w-280, 10)
+        -- Correction du bug w non déclaré, utilisation de SetPos fixe
+        combo:SetPos(300, 10) 
         combo:SetSize(160, 26)
         combo:SetFont("SWTOR_HUD_Small")
         combo:AddChoice("Joueur (aucun)",   "none",          pRank == nil)
         combo:AddChoice("Animateur",        "animateur",     pRank == "animateur")
         combo:AddChoice("Modérateur",       "moderateur",    pRank == "moderateur")
         combo:AddChoice("Administrateur",   "administrateur",pRank == "administrateur")
-        if MyRank == "fondateur" or MyRank == "responsable" then
+        
+        local myRank = GetMyRank()
+        if myRank == "fondateur" or myRank == "responsable" then
             combo:AddChoice("Responsable",  "responsable",   pRank == "responsable")
         end
-        if MyRank == "fondateur" then
+        if myRank == "fondateur" then
             combo:AddChoice("Fondateur",    "fondateur",     pRank == "fondateur")
         end
 
         local applyBtn = vgui.Create("DButton", row)
-        applyBtn:SetPos(w-112, 10)
-        applyBtn:SetSize(100, 26)
+        applyBtn:SetPos(470, 10) 
+        applyBtn:SetSize(90, 26)
         applyBtn:SetText("Appliquer")
         applyBtn:SetFont("SWTOR_HUD_Small")
         applyBtn.DoClick = function()
@@ -285,11 +314,6 @@ concommand.Add("swtor_hrp_panel", function()
             net.SendToServer()
         end
     end
-end)
-
--- Réception confirmation set HRP depuis panel
-net.Receive("SWTOR_HRPUpdate", function()
-    -- Déjà géré au-dessus
 end)
 
 print("[SW:TOR HRP] Client HRP chargé ✓")
