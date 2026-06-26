@@ -478,12 +478,20 @@ print("[SW:TOR RP] Database v2 + stats chargés ✓")
 --  RÉCEPTION DES ACTIONS DU MENU CLIENT (FACTION & VOYAGE)
 -- ============================================================
 net.Receive("SWTOR_SetFaction", function(len, ply)
-    -- Le client envoie son SteamID puis la faction choisie
     local sentSteamID = net.ReadString() 
     local factionKey = net.ReadString()
 
-    -- On applique la faction au joueur
-    SWTOR.SetFaction(ply, factionKey)
+    print("[DEBUG] --- TENTATIVE DE REJOINDRE UNE FACTION ---")
+    print("[DEBUG] Joueur: " .. ply:Nick())
+    print("[DEBUG] Faction demandée: " .. tostring(factionKey))
+
+    local success, err = SWTOR.SetFaction(ply, factionKey)
+    
+    if not success then
+        print("[DEBUG] ❌ ÉCHEC: " .. tostring(err))
+    else
+        print("[DEBUG] ✔ SUCCÈS pour " .. ply:Nick())
+    end
 end)
 
 net.Receive("SWTOR_TeleportPlanet", function(len, ply)
