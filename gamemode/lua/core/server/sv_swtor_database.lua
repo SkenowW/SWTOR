@@ -509,10 +509,6 @@ net.Receive("SWTOR_SetFaction", function(len, ply)
     local sentSteamID = net.ReadString() 
     local factionKey = net.ReadString()
 
-    print("[DEBUG] --- TENTATIVE DE REJOINDRE UNE FACTION ---")
-    print("[DEBUG] Joueur: " .. ply:Nick())
-    print("[DEBUG] Faction demandée: " .. tostring(factionKey))
-
     local success, err = SWTOR.SetFaction(ply, factionKey)
     
     if not success then
@@ -528,4 +524,18 @@ net.Receive("SWTOR_TeleportPlanet", function(len, ply)
     
     -- On téléporte le joueur
     SWTOR.TeleportToPlanet(ply, planetKey)
+end)
+
+net.Receive("SWTOR_SetClass", function(len, ply)
+    local classKey = net.ReadString() -- On récupère le choix du joueur
+    
+    -- On appelle ta fonction existante
+    local success, err = SWTOR.SetClass(ply, classKey)
+    
+    if not success then
+        print("[DEBUG] Erreur SetClass pour " .. ply:Nick() .. " : " .. (err or "Inconnu"))
+        return
+    end
+    
+    print("[DEBUG] Classe " .. classKey .. " appliquée avec succès pour " .. ply:Nick())
 end)
