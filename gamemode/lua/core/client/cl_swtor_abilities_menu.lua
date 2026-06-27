@@ -1,16 +1,12 @@
 -- ============================================================
 --  SW:TOR RP — MENU ABILITIES PAR CLASSE
 --  lua/autorun/client/cl_swtor_abilities_menu.lua
---  Remplace cl_swtor_force.lua — relié aux classes réelles
 -- ============================================================
 
 if SERVER then return end
 
--- Cooldowns locaux (temps réel)
 local LocalCDs = {}
 
--- Coûts énergie et cooldowns pour affichage
--- (reflète sv_swtor_abilities.lua)
 local AbilityMeta = {
     force_push_dark  = { cost=20, cd=8  },  force_push_jedi  = { cost=20, cd=8  },
     saber_throw      = { cost=30, cd=12 },  force_charge     = { cost=25, cd=10 },
@@ -40,12 +36,12 @@ local AbilityMeta = {
     intimidate       = { cost=15, cd=10 },
 }
 
-local MenuOpen = false
-
 local function OpenAbilitiesMenu()
     if not SWTOR or not SWTOR.Classes then return end
-    local faction = LocalData and LocalData.faction or ""
-    local classKey = LocalData and LocalData.class or ""
+    
+    local ply = LocalPlayer()
+    local faction = ply:GetNWString("swtor_faction", "")
+    local classKey = ply:GetNWString("swtor_class", "")
     local cls = SWTOR.Classes[classKey]
 
     if not cls then
@@ -53,16 +49,12 @@ local function OpenAbilitiesMenu()
         return
     end
 
-    -- Toggle
     if IsValid(SWTOR_AbilMenu) then
         SWTOR_AbilMenu:Remove()
-        MenuOpen = false
         return
     end
-    MenuOpen = true
 
-    -- Collecter abilities débloquées
-    local grade    = LocalData.grade or 1
+    local grade    = ply:GetNWInt("swtor_grade", 1)
     local unlocked = {}
     local locked   = {}
 
@@ -77,21 +69,17 @@ local function OpenAbilitiesMenu()
             cost    = meta.cost,
             cd      = meta.cd,
         }
-        if grade >= reqGrade then
-            table.insert(unlocked, entry)
-        else
-            table.insert(locked, entry)
-        end
+        if grade >= reqGrade then table.insert(unlocked, entry)
+        else table.insert(locked, entry) end
     end
 
     table.sort(unlocked, function(a,b) return a.grade < b.grade end)
     table.sort(locked,   function(a,b) return a.grade < b.grade end)
 
-    local all    = {}
+    local all = {}
     for _, a in ipairs(unlocked) do table.insert(all, a) end
     for _, a in ipairs(locked)   do table.insert(all, a) end
 
-    -- Taille du panel
     local sw, sh  = ScrW(), ScrH()
     local cols    = 2
     local cardW   = 200
@@ -124,15 +112,15 @@ local function OpenAbilitiesMenu()
             w/2, 25, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
         surface.SetDrawColor(cColor.r, cColor.g, cColor.b, 100)
         surface.DrawOutlinedRect(0,0,w,h,2)
-        -- Énergie
-        local maxE = (cls.stats.force_max or 100) + math.floor((LocalData.stat_energy or 10)*2)
-        local curE = LocalPlayer().swtor_current_energy or maxE
+        
+        -- Énergie lue dynamiquement
+        local maxE = (cls.stats.force_max or 100) + math.floor((ply:GetNWInt("swtor_stat_energy", 10))*2)
+        local curE = ply:GetNWInt("swtor_current_energy", maxE)
         local eRatio = math.Clamp(curE/maxE, 0, 1)
         draw.RoundedBox(0, 0, h-6, w, 6, Color(0,0,0,150))
         draw.RoundedBox(0, 0, h-6, w*eRatio, 6, cColor)
     end
 
-    -- Scroll si trop d'abilities
     local scroll = vgui.Create("DScrollPanel", frame)
     scroll:SetPos(padX/2, 54)
     scroll:SetSize(W - padX, H - 60)
@@ -158,61 +146,29 @@ local function OpenAbilitiesMenu()
             local onCD   = cdEnd > now and isUnlocked
             local cdLeft = onCD and math.ceil(cdEnd-now) or 0
 
-            -- Fond
-            local bg
-            if not isUnlocked then
-                bg = Color(8,8,18,180)
-            elseif onCD then
-                bg = Color(12,10,25,200)
-            elseif hov then
-                bg = Color(cColor.r*0.3, cColor.g*0.3, cColor.b*0.3, 220)
-            else
-                bg = Color(12,14,28,200)
-            end
+            local bg = isUnlocked and (onCD and Color(12,10,25,200) or (hov and Color(cColor.r*0.3, cColor.g*0.3, cColor.b*0.3, 220) or Color(12,14,28,200))) or Color(8,8,18,180)
             draw.RoundedBox(7, 0, 0, w, h, bg)
 
-            -- Bordure
             local bc = isUnlocked and (onCD and 40 or (hov and 255 or 120)) or 30
             surface.SetDrawColor(cColor.r, cColor.g, cColor.b, bc)
             surface.DrawOutlinedRect(0,0,w,h,1)
 
-            -- Icône
-            draw.SimpleText(ab.icon, "SWTOR_HUD_Title",
-                20, h/2, Color(255,255,255, isUnlocked and 255 or 60),
-                TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            draw.SimpleText(ab.icon, "SWTOR_HUD_Title", 20, h/2, Color(255,255,255, isUnlocked and 255 or 60), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            draw.SimpleText(ab.name, "SWTOR_HUD_Small", 36, 12, Color(220,220,220, isUnlocked and 255 or 80), TEXT_ALIGN_LEFT)
+            draw.SimpleText("✦ " .. ab.cost, "SWTOR_Small2", 36, 27, Color(80,100,220, isUnlocked and 200 or 60), TEXT_ALIGN_LEFT)
+            draw.SimpleText("⏱ " .. ab.cd .. "s", "SWTOR_Small2", 36+50, 27, Color(160,160,160, isUnlocked and 180 or 50), TEXT_ALIGN_LEFT)
 
-            -- Nom
-            draw.SimpleText(ab.name, "SWTOR_HUD_Small",
-                36, 12, Color(220,220,220, isUnlocked and 255 or 80),
-                TEXT_ALIGN_LEFT)
-
-            -- Coût énergie
-            draw.SimpleText("✦ " .. ab.cost, "SWTOR_Small2",
-                36, 27, Color(80,100,220, isUnlocked and 200 or 60),
-                TEXT_ALIGN_LEFT)
-
-            -- Cooldown
-            draw.SimpleText("⏱ " .. ab.cd .. "s", "SWTOR_Small2",
-                36+50, 27, Color(160,160,160, isUnlocked and 180 or 50),
-                TEXT_ALIGN_LEFT)
-
-            -- Grade requis
             if not isUnlocked then
-                draw.SimpleText("Grade " .. ab.grade .. " requis", "SWTOR_Small2",
-                    w/2, h-14, Color(180,100,50), TEXT_ALIGN_CENTER)
+                draw.SimpleText("Grade " .. ab.grade .. " requis", "SWTOR_Small2", w/2, h-14, Color(180,100,50), TEXT_ALIGN_CENTER)
             end
 
-            -- Overlay cooldown
             if onCD then
                 draw.RoundedBox(7,0,0,w,h,Color(0,0,0,120))
-                draw.SimpleText(cdLeft .. "s", "SWTOR_HUD_Big",
-                    w/2, h/2, Color(220,100,100), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+                draw.SimpleText(cdLeft .. "s", "SWTOR_HUD_Big", w/2, h/2, Color(220,100,100), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
             end
 
-            -- Barre de cd (bas de la carte)
             if isUnlocked and onCD then
-                local cdTotal = ab.cd
-                local cdRatio = cdLeft / cdTotal
+                local cdRatio = cdLeft / ab.cd
                 draw.RoundedBox(0, 0, h-4, w, 4, Color(0,0,0,150))
                 draw.RoundedBox(0, 0, h-4, w*cdRatio, 4, Color(cColor.r, cColor.g, cColor.b, 180))
             end
@@ -220,14 +176,13 @@ local function OpenAbilitiesMenu()
 
         if isUnlocked then
             card.DoClick = function()
-                local now   = CurTime()
+                local now = CurTime()
                 if LocalCDs[abId] and LocalCDs[abId] > now then return end
                 net.Start("SWTOR_UseAbility")
                     net.WriteString(abId)
                 net.SendToServer()
                 LocalCDs[abId] = now + ab.cd
-                local snd = "ambient/levels/labs/electric_explosion" .. math.random(1,4) .. ".wav"
-                surface.PlaySound(snd)
+                surface.PlaySound("ambient/levels/labs/electric_explosion" .. math.random(1,4) .. ".wav")
             end
         end
     end
@@ -236,16 +191,18 @@ end
 -- ============================================================
 --  BARRE D'ABILITIES RAPIDES (bas de l'écran, touches 1-9)
 -- ============================================================
-local QuickBar = {}  -- Les abilities assignées aux touches 1-9
+local QuickBar = {}
 
 hook.Add("HUDPaint", "SWTOR_QuickBar", function()
-    if not LocalData or LocalData.class == "" then return end
-    local cls = SWTOR and SWTOR.Classes and SWTOR.Classes[LocalData.class]
+    local ply = LocalPlayer()
+    local classKey = ply:GetNWString("swtor_class", "")
+    if classKey == "" then return end
+    
+    local cls = SWTOR and SWTOR.Classes and SWTOR.Classes[classKey]
     if not cls then return end
 
-    -- Construire la quickbar depuis les abilities débloquées
     if #QuickBar == 0 then
-        local grade = LocalData.grade or 1
+        local grade = ply:GetNWInt("swtor_grade", 1)
         for reqGrade, ab in pairs(cls.abilities) do
             if grade >= reqGrade and #QuickBar < 9 then
                 table.insert(QuickBar, ab)
@@ -263,11 +220,12 @@ hook.Add("HUDPaint", "SWTOR_QuickBar", function()
     local bx       = sw/2 - barW/2
     local by       = sh - slotH - 14
 
-    local fData    = SWTOR.Factions[LocalData.faction]
+    local fData    = SWTOR.Factions[ply:GetNWString("swtor_faction", "")]
     local fColor   = fData and fData.color or Color(150,150,150)
     local now      = CurTime()
-    local maxE     = (cls.stats.force_max or 100) + math.floor((LocalData.stat_energy or 10)*2)
-    local curE     = LocalPlayer().swtor_current_energy or maxE
+    
+    local maxE     = (cls.stats.force_max or 100) + math.floor((ply:GetNWInt("swtor_stat_energy", 10))*2)
+    local curE     = ply:GetNWInt("swtor_current_energy", maxE)
 
     for i, ab in ipairs(QuickBar) do
         local sx     = bx + (i-1)*(slotW+gap)
@@ -277,34 +235,17 @@ hook.Add("HUDPaint", "SWTOR_QuickBar", function()
         local cdLeft = onCD and math.ceil(cdEnd-now) or 0
         local canUse = not onCD and curE >= meta.cost
 
-        -- Fond slot
         draw.RoundedBox(5, sx, by, slotW, slotH, Color(5,7,16,210))
         surface.SetDrawColor(fColor.r, fColor.g, fColor.b, canUse and 140 or 40)
         surface.DrawOutlinedRect(sx, by, slotW, slotH, 1)
 
-        -- Icône
-        draw.SimpleText(ab.icon, "SWTOR_HUD_Title",
-            sx+slotW/2, by+slotH/2-6,
-            Color(255,255,255, canUse and 230 or 80),
-            TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        draw.SimpleText(ab.icon, "SWTOR_HUD_Title", sx+slotW/2, by+slotH/2-6, Color(255,255,255, canUse and 230 or 80), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+        draw.SimpleText(tostring(i), "SWTOR_Small2", sx+4, by+4, Color(180,180,180,180), TEXT_ALIGN_LEFT)
+        draw.SimpleText("✦" .. meta.cost, "SWTOR_Small2", sx+slotW/2, by+slotH-8, Color(80,100,200, canUse and 200 or 60), TEXT_ALIGN_CENTER)
 
-        -- Numéro de touche
-        draw.SimpleText(tostring(i), "SWTOR_Small2",
-            sx+4, by+4, Color(180,180,180,180), TEXT_ALIGN_LEFT)
-
-        -- Coût énergie (bas)
-        draw.SimpleText("✦" .. meta.cost, "SWTOR_Small2",
-            sx+slotW/2, by+slotH-8,
-            Color(80,100,200, canUse and 200 or 60),
-            TEXT_ALIGN_CENTER)
-
-        -- Overlay CD
         if onCD then
             draw.RoundedBox(5, sx, by, slotW, slotH, Color(0,0,0,140))
-            draw.SimpleText(cdLeft .. "s", "SWTOR_HUD_Medium",
-                sx+slotW/2, by+slotH/2,
-                Color(220,100,100), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-            -- Barre CD circulaire (barre basse)
+            draw.SimpleText(cdLeft .. "s", "SWTOR_HUD_Medium", sx+slotW/2, by+slotH/2, Color(220,100,100), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
             local pct = cdLeft / meta.cd
             surface.SetDrawColor(fColor.r, fColor.g, fColor.b, 180)
             surface.DrawRect(sx, by+slotH-3, slotW*(1-pct), 3)
@@ -312,33 +253,31 @@ hook.Add("HUDPaint", "SWTOR_QuickBar", function()
     end
 end)
 
--- Touches numériques 1-9 → utiliser la quickbar
+local nextKeyTime = 0
 hook.Add("PlayerButtonDown", "SWTOR_QuickBarKeys", function(ply, btn)
-    if not CLIENT then return end
-    -- KEY_1 = 2, KEY_2 = 3 ... KEY_9 = 10
     if btn >= KEY_1 and btn <= KEY_9 then
+        if CurTime() < nextKeyTime then return end
+        
         local idx = btn - KEY_1 + 1
         local ab  = QuickBar[idx]
         if not ab then return end
+        
         local now = CurTime()
         if LocalCDs[ab.id] and LocalCDs[ab.id] > now then return end
+        
+        nextKeyTime = CurTime() + 0.3
+        
         net.Start("SWTOR_UseAbility")
             net.WriteString(ab.id)
         net.SendToServer()
+        
         local meta = AbilityMeta[ab.id] or { cd=10 }
         LocalCDs[ab.id] = now + meta.cd
         surface.PlaySound("buttons/button15.wav")
     end
 end)
 
--- Reset quickbar si la classe change
-hook.Add("SWTOR_ClassChanged", "SWTOR_ResetQuickBar", function()
-    QuickBar = {}
-end)
-net.Receive("SWTOR_SyncData", function()
-    QuickBar = {}  -- Rebuild au prochain paint
-end)
-
+hook.Add("SWTOR_ClassChanged", "SWTOR_ResetQuickBar", function() QuickBar = {} end)
+net.Receive("SWTOR_SyncData", function() QuickBar = {} end)
 concommand.Add("swtor_abilities", OpenAbilitiesMenu)
-
 print("[SW:TOR] Menu abilities + QuickBar chargés ✓ — Q pour ouvrir")

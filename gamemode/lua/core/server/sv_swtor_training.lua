@@ -77,10 +77,10 @@ end)
 -- Détecter victoire (HP à 1)
 timer.Create("SWTOR_TrainingCheck", 0.1, 0, function()
     for sid, fight in pairs(SWTOR.Training.Fights) do
-        local ply, opp = nil, fight.opponent
-        for _, p in ipairs(player.GetAll()) do
-            if p:SteamID() == sid then ply=p break end
-        end
+        -- CORRECTION ANTI-LAG : Recherche instantanée sans boucle
+        local ply = player.GetBySteamID(sid)
+        local opp = fight.opponent
+        
         if not IsValid(ply) or not IsValid(opp) then
             SWTOR.Training.Fights[sid] = nil continue
         end

@@ -515,6 +515,9 @@ net.Receive("SWTOR_UseAbility", function(len, ply)
         return
     end
 
+    -- SÉCURITÉ : Empêcher de lancer des pouvoirs en étant mort
+    if not ply:Alive() then return end
+    
     -- 1b) Vérifier restriction HRP (Étranglement, Champ de Mort = Responsable+)
     local hrpReq = SWTOR.GetAbilityHRPReq and SWTOR.GetAbilityHRPReq(ply, abilityId)
     if hrpReq and hrpReq > 0 then
@@ -543,7 +546,7 @@ net.Receive("SWTOR_UseAbility", function(len, ply)
 
     -- 4) Appliquer le coût
     ply.swtor_current_energy = curEnergy - energyCost
-
+    ply:SetNWInt("swtor_current_energy", ply.swtor_current_energy) -- AJOUT RÉSEAU ICI
     -- 5) Mettre en cooldown
     SWTOR.AbilityCDs[cdKey] = CurTime() + (def.cd or 10)
 
@@ -565,7 +568,7 @@ timer.Create("SWTOR_EnergyRegen", 0.5, 0, function()
             -- Bonus max depuis stat energy
             maxE = maxE + math.floor((ply.swtor_stat_energy or 10) * 2)
             local regenRate = (cls and cls.stats.force_regen or 5)
-            -- Regen doublée si pas en combat (dernier dégât > 5s)
+            
             local lastDmg = ply.swtor_last_damage or 0
             if CurTime() - lastDmg > 5 then regenRate = regenRate * 2 end
 
@@ -573,6 +576,8 @@ timer.Create("SWTOR_EnergyRegen", 0.5, 0, function()
                 (ply.swtor_current_energy or maxE) + regenRate * 0.5,
                 maxE
             )
+            -- AJOUT RÉSEAU ICI (pour que la barre remonte en temps réel sur le HUD client)
+            ply:SetNWInt("swtor_current_energy", math.floor(ply.swtor_current_energy))
         end
     end
 end)
