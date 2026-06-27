@@ -176,7 +176,7 @@ local function OpenTravelMenu()
     scroll:Dock(FILL)
     scroll:DockMargin(10, 30, 10, 10)
 
-    local localFaction = LocalPlayer().swtor_faction or ""
+    local localFaction = LocalPlayer():GetNWString("swtor_faction", "")
 
     for key, planet in pairs(SWTOR.Planets) do
         local isAccessible = (planet.faction == localFaction)
@@ -262,7 +262,7 @@ hook.Add("InitPostEntity", "SWTOR_CheckFaction", function()
     timer.Simple(3, function()
         if not SWTOR then return end
         -- Vérifier via les données reçues du serveur
-        if LocalData.faction == "" then
+        if LocalPlayer():GetNWString("swtor_faction", "") == "" then
             OpenFactionMenu()
         end
     end)

@@ -14,7 +14,7 @@ end)
 
 function OpenClassMenu()
     if not SWTOR or not SWTOR.Classes then return end
-    local faction = LocalData and LocalData.faction or ""
+    local faction = LocalPlayer():GetNWString("swtor_faction", "")
     if faction == "" then
         chat.AddText(Color(255,150,50), "[SW:TOR] Choisissez une faction d'abord.")
         return

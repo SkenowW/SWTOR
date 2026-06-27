@@ -437,6 +437,7 @@ end
 -- Appliquer les stats d'un grade directement
 function SWTOR.ApplyGradeStats(ply)
     if not IsValid(ply) then return end
+    if CLIENT then return end
     local faction = ply.swtor_faction or ""
     local grade   = SWTOR.GetGrade(faction, ply.swtor_grade or 1)
     if not grade then return end

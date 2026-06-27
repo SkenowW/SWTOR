@@ -5,8 +5,15 @@
 
 if SERVER then return end
 
+local nextClick = 0 -- Sécurité anti-spam
+
 local function OpenStatsMenu()
-    if LocalData.faction == "" then
+    local ply = LocalPlayer()
+    local myFaction = ply:GetNWString("swtor_faction", "")
+    local myClass   = ply:GetNWString("swtor_class", "")
+    local myGrade   = ply:GetNWInt("swtor_grade", 1)
+
+    if myFaction == "" then
         chat.AddText(Color(255,150,50), "[SW:TOR] Rejoignez une faction d'abord.")
         return
     end
@@ -16,9 +23,9 @@ local function OpenStatsMenu()
     local sw, sh = ScrW(), ScrH()
     local W, H   = 480, 520
 
-    local fData  = SWTOR and SWTOR.Factions and SWTOR.Factions[LocalData.faction]
+    local fData  = SWTOR and SWTOR.Factions and SWTOR.Factions[myFaction]
     local fColor = fData and fData.color or Color(150,150,150)
-    local cls    = SWTOR and SWTOR.Classes and SWTOR.Classes[LocalData.class]
+    local cls    = SWTOR and SWTOR.Classes and SWTOR.Classes[myClass]
 
     local frame = vgui.Create("DFrame")
     frame:SetPos((sw-W)/2, (sh-H)/2)
@@ -45,17 +52,19 @@ local function OpenStatsMenu()
     infoPanel:SetSize(W-40, 55)
     infoPanel.Paint = function(s,w,h)
         draw.RoundedBox(6, 0, 0, w, h, Color(15,18,35,200))
-        local ply     = LocalPlayer()
-        local grades  = SWTOR and SWTOR.Grades and SWTOR.Grades[LocalData.faction]
-        local gData   = grades and grades[LocalData.grade]
+        
+        local grades  = SWTOR and SWTOR.Grades and SWTOR.Grades[myFaction]
+        local gData   = grades and grades[myGrade]
         local gName   = gData and gData.name or "N/A"
+        
         draw.SimpleText((cls and cls.icon or "?") .. " " .. (cls and cls.name or "Aucune classe"),
             "SWTOR_HUD_Big", 12, 14, cls and cls.color or Color(200,200,200),
             TEXT_ALIGN_LEFT)
-        draw.SimpleText("Grade " .. LocalData.grade .. " — " .. gName,
+        draw.SimpleText("Grade " .. myGrade .. " — " .. gName,
             "SWTOR_HUD_Small", 12, 34, Color(160,160,160), TEXT_ALIGN_LEFT)
+            
         -- Points dispo (coin droit)
-        local pts = LocalData.stat_points or 0
+        local pts = ply:GetNWInt("swtor_stat_points", 0)
         local ptCol = pts > 0 and Color(220,200,50) or Color(100,100,100)
         draw.SimpleText(pts .. " point" .. (pts > 1 and "s" or "") .. " disponible" .. (pts > 1 and "s" or ""),
             "SWTOR_HUD_Medium", w-12, 26, ptCol, TEXT_ALIGN_RIGHT, TEXT_ALIGN_CENTER)
@@ -123,7 +132,7 @@ local function OpenStatsMenu()
                 14, 14, sc, TEXT_ALIGN_LEFT)
 
             -- Valeur actuelle / max
-            local curVal = LocalData["stat_" .. statKey] or 10
+            local curVal = ply:GetNWInt("swtor_stat_" .. statKey, 10)
             draw.SimpleText(curVal .. " / 50", "SWTOR_HUD_Big",
                 w - 14, 14, Color(255,255,255), TEXT_ALIGN_RIGHT)
 
@@ -159,8 +168,8 @@ local function OpenStatsMenu()
 
         local sk = statKey
         addBtn.Paint = function(s,w,h)
-            local pts  = LocalData.stat_points or 0
-            local cur  = LocalData["stat_" .. sk] or 10
+            local pts  = ply:GetNWInt("swtor_stat_points", 0)
+            local cur  = ply:GetNWInt("swtor_stat_" .. sk, 10)
             local canAdd = pts > 0 and cur < 50
             draw.RoundedBox(5, 0, 0, w, h,
                 canAdd and Color(sc.r*0.5, sc.g*0.5, sc.b*0.5, 220)
@@ -170,8 +179,13 @@ local function OpenStatsMenu()
         end
 
         addBtn.DoClick = function()
-            local pts = LocalData.stat_points or 0
-            local cur = LocalData["stat_" .. sk] or 10
+            -- Anti-spam réseau (0.3s)
+            if CurTime() < nextClick then return end
+            nextClick = CurTime() + 0.3
+            
+            local pts = ply:GetNWInt("swtor_stat_points", 0)
+            local cur = ply:GetNWInt("swtor_stat_" .. sk, 10)
+            
             if pts <= 0 then
                 chat.AddText(Color(220,100,50), "[SW:TOR] Aucun point disponible.")
                 return
@@ -180,13 +194,11 @@ local function OpenStatsMenu()
                 chat.AddText(Color(220,100,50), "[SW:TOR] Stat au maximum.")
                 return
             end
+            
             net.Start("SWTOR_SpendStat")
                 net.WriteString(sk)
             net.SendToServer()
             surface.PlaySound("buttons/button15.wav")
-            -- Update local immédiat (sera confirmé par SyncData)
-            LocalData["stat_" .. sk] = cur + 1
-            LocalData.stat_points    = pts - 1
         end
     end
 
