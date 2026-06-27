@@ -5,6 +5,8 @@
 
 if SERVER then return end
 
+local nextKeyTime = 0 -- Anti-spam global pour les touches de combat
+
 -- ============================================================
 --  CHANGEMENT DE POSTURE — Touche X
 -- ============================================================
@@ -13,9 +15,15 @@ local currentStanceIdx = 1
 
 hook.Add("PlayerButtonDown", "SWTOR_StanceKey", function(ply, btn)
     if btn ~= KEY_X then return end
-    if not LocalData or LocalData.faction == "" then return end
+    if CurTime() < nextKeyTime then return end
+
+    local myFaction = LocalPlayer():GetNWString("swtor_faction", "")
+    if myFaction == "" then return end
+
     local wep = LocalPlayer():GetActiveWeapon()
     if not IsValid(wep) then return end
+
+    nextKeyTime = CurTime() + 0.3 -- Bloque les touches pendant 0.3s
 
     currentStanceIdx = currentStanceIdx % #stanceCycle + 1
     local stance = stanceCycle[currentStanceIdx]
@@ -32,6 +40,8 @@ end)
 -- ============================================================
 hook.Add("PlayerButtonDown", "SWTOR_LockKey", function(ply, btn)
     if btn ~= KEY_V then return end
+    if CurTime() < nextKeyTime then return end -- Sécurité anti-spam
+    nextKeyTime = CurTime() + 0.3 -- Bloque les touches pendant 0.3s
     local lp = LocalPlayer()
 
     -- Si déjà verrouillé, déverrouiller
@@ -131,7 +141,8 @@ end)
 --  HUD DE COMBAT — Stamina + Posture + Combo + Lock
 -- ============================================================
 hook.Add("HUDPaint", "SWTOR_CombatHUD", function()
-    if not LocalData or LocalData.faction == "" then return end
+    local myFaction = LocalPlayer():GetNWString("swtor_faction", "")
+    if myFaction == "" then return end
     local lp  = LocalPlayer()
     local wep = lp:GetActiveWeapon()
     if not IsValid(wep) then return end
@@ -311,8 +322,9 @@ end)
 --  Certaines voies ont accès à plus de postures
 -- ============================================================
 local function GetAvailableStances()
-    if not LocalData then return { "balanced" } end
-    local faction = LocalData.faction or ""
+    local faction = LocalPlayer():GetNWString("swtor_faction", "")
+    if faction == "" then return { "balanced" } end
+
     local form    = SWTOR.CombatEngine and SWTOR.CombatEngine.GetForm and SWTOR.CombatEngine.GetForm(LocalPlayer())
 
     local stances = { "balanced", "aggressive", "defensive" }
@@ -331,7 +343,7 @@ end
 
 -- Mettre à jour le cycle de postures selon la voie
 hook.Add("Think", "SWTOR_UpdateStanceCycle", function()
-    if not LocalData then return end
+    if not IsValid(LocalPlayer()) or LocalPlayer():GetNWString("swtor_faction", "") == "" then return end 
     stanceCycle = GetAvailableStances()
 end)
 
@@ -344,10 +356,12 @@ local formCycleIdx = 1
 
 hook.Add("PlayerButtonDown", "SWTOR_FormKey", function(ply, btn)
     if btn ~= KEY_C then return end
-    if not LocalData or LocalData.faction == "" then return end
+    if CurTime() < nextKeyTime then return end -- Sécurité anti-spam
+    local myFaction = LocalPlayer():GetNWString("swtor_faction", "")
+    if myFaction == "" then return end
     local wep = LocalPlayer():GetActiveWeapon()
     if not IsValid(wep) then return end
-
+    nextKeyTime = CurTime() + 0.3 -- Bloque les touches pendant 0.3s
     -- Récupérer les formes disponibles
     local avail = SWTOR.CombatEngine and SWTOR.CombatEngine.GetAvailableForms and
                   SWTOR.CombatEngine.GetAvailableForms(LocalPlayer())
@@ -369,7 +383,8 @@ end)
 
 -- Affichage de la forme active dans le HUD
 hook.Add("HUDPaint", "SWTOR_FormHUD", function()
-    if not LocalData or LocalData.faction == "" then return end
+    local myFaction = LocalPlayer():GetNWString("swtor_faction", "")
+    if myFaction == "" then return end
     local lp  = LocalPlayer()
     local wep = lp:GetActiveWeapon()
     if not IsValid(wep) then return end

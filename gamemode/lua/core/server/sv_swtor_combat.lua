@@ -162,11 +162,20 @@ net.Receive("SWTOR_ForceUse", function(len, ply)
     local power    = ForcePowers[powerKey]
     if not power then return end
 
-    -- Vérifier faction
+    -- SÉCURITÉ 1 : Le pouvoir est-il de sa faction ?
     if power.faction ~= ply.swtor_faction then
         SWTOR.Notify(ply, "Ce pouvoir n'appartient pas à votre faction.", "error")
         return
     end
+
+    -- SÉCURITÉ 2 : Le joueur a-t-il vraiment débloqué cette compétence avec son grade/classe ?
+    if not SWTOR.HasAbility(ply, powerKey) then
+        SWTOR.Notify(ply, "Vous n'avez pas encore débloqué ce pouvoir.", "error")
+        return
+    end
+
+    -- SÉCURITÉ 3 : Le joueur est-il en vie ? (Évite d'étrangler quelqu'un en étant mort)
+    if not ply:Alive() then return end
 
     -- Cooldown
     local sid = ply:SteamID()

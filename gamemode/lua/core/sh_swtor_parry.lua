@@ -11,14 +11,11 @@ SWTOR.Parry = SWTOR.Parry or {}
 --  ÉTATS DE PARADE PAR STYLE
 -- ============================================================
 
--- Durée de la fenêtre de parade active (secondes)
--- Pendant cette fenêtre, les attaques reçues sont réfléchies/bloquées
 SWTOR.Parry.Config = {
     parry_window    = 0.5,   -- 0.5s de fenêtre après MAJ+Clic
     parry_cooldown  = 2.0,   -- 2s de CD entre deux parades
-    parry_stamina   = 30,    -- Coût en énergie d'une parade
+    parry_stamina   = 30,    -- Coût en endurance (stamina) d'une parade
 
-    -- Selon le style, la parade est plus ou moins efficace
     style_bonus = {
         single  = { reflect = 0.8,  dmg_return = 0.4,  stagger_attacker = true  },
         dual    = { reflect = 0.6,  dmg_return = 0.2,  stagger_attacker = false },  -- Dual = esquive plutôt que bloc
@@ -32,15 +29,18 @@ SWTOR.Parry.Config = {
 -- ============================================================
 function SWTOR.Parry.CanParry(ply)
     if not IsValid(ply) then return false end
+    
     -- Cooldown
     if ply.swtor_parry_cd and ply.swtor_parry_cd > CurTime() then
         return false, math.ceil(ply.swtor_parry_cd - CurTime())
     end
-    -- Énergie suffisante
-    local curE = ply.swtor_current_energy or 100
-    if curE < SWTOR.Parry.Config.parry_stamina then
-        return false, 0, "énergie"
+    
+    -- CORRECTION : On utilise le vrai système de Stamina du Moteur de Combat
+    local curStamina = SWTOR.CombatEngine and SWTOR.CombatEngine.GetStamina(ply) or 100
+    if curStamina < SWTOR.Parry.Config.parry_stamina then
+        return false, 0, "stamina"
     end
+    
     return true
 end
 
@@ -48,11 +48,13 @@ end
 --  APPLIQUER UNE PARADE (côté serveur)
 -- ============================================================
 function SWTOR.Parry.DoParry(ply, style)
+    if CLIENT then return end -- SÉCURITÉ : Seulement le serveur gère ça
     if not IsValid(ply) then return end
+    
     local canParry, cd, reason = SWTOR.Parry.CanParry(ply)
     if not canParry then
-        if reason == "énergie" then
-            SWTOR.Notify(ply, "⚡ Énergie insuffisante pour parer !", "error")
+        if reason == "stamina" then
+            SWTOR.Notify(ply, "⚡ Endurance insuffisante pour parer !", "error")
         else
             SWTOR.Notify(ply, "⏱ Parade en recharge : " .. (cd or 0) .. "s", "warning")
         end
@@ -65,8 +67,10 @@ function SWTOR.Parry.DoParry(ply, style)
     ply.swtor_parry_style = style or "single"
     ply.swtor_parry_cd    = CurTime() + SWTOR.Parry.Config.parry_cooldown
 
-    -- Coût énergie
-    ply.swtor_current_energy = math.max(0, (ply.swtor_current_energy or 100) - SWTOR.Parry.Config.parry_stamina)
+    -- CORRECTION : Déduire la Stamina via le Moteur de Combat
+    if SWTOR.CombatEngine and SWTOR.CombatEngine.UseStamina then
+        SWTOR.CombatEngine.UseStamina(ply, SWTOR.Parry.Config.parry_stamina)
+    end
 
     -- Notifier
     local styleNames = { single="Parade", dual="Esquive", double="Bloc Total", vibro="Contre" }
@@ -83,7 +87,7 @@ function SWTOR.Parry.DoParry(ply, style)
 end
 
 -- ============================================================
---  VÉRIFIER PENDANT UN IMPACT (appelé depuis les SWEP)
+--  VÉRIFIER PENDANT UN IMPACT (appelé depuis les SWEP / Hooks)
 -- ============================================================
 function SWTOR.Parry.CheckParry(attacker, victim, damage, style)
     if not IsValid(victim) then return damage, false end
@@ -101,10 +105,14 @@ function SWTOR.Parry.CheckParry(attacker, victim, damage, style)
     -- Succès de parade !
     local dmgReturned = math.floor(damage * cfg.dmg_return)
 
-    -- Renvoyer les dégâts sur l'attaquant
+    -- CORRECTION ANTI-CRASH : On retarde les dégâts d'une frame pour éviter une boucle infinie de hooks
     if IsValid(attacker) and attacker:IsPlayer() and dmgReturned > 0 then
-        attacker:TakeDamage(dmgReturned, victim, victim)
-        SWTOR.Notify(attacker, "⚔ Parade ! " .. dmgReturned .. " dmg renvoyés !", "error")
+        timer.Simple(0, function()
+            if IsValid(attacker) and IsValid(victim) then
+                attacker:TakeDamage(dmgReturned, victim, victim)
+                SWTOR.Notify(attacker, "⚔ Parade ! " .. dmgReturned .. " dmg renvoyés !", "error")
+            end
+        end)
     end
 
     -- Stagger l'attaquant
@@ -118,7 +126,7 @@ function SWTOR.Parry.CheckParry(attacker, victim, damage, style)
             Color(200, 200, 255), 60)
     end
 
-    -- Annuler les dégâts sur la victime (bloc total)
+    -- Annuler les dégâts sur la victime (bloc total/partiel)
     local dmgToVictim = math.floor(damage * (1 - cfg.reflect))
     return dmgToVictim, true
 end
