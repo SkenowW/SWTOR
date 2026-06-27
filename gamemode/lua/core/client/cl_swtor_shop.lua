@@ -20,7 +20,7 @@ end)
 
 local function OpenShop()
     if not SWTOR or not SWTOR.Shop then return end
-    local faction = LocalData and LocalData.faction or ""
+    local faction = LocalPlayer():GetNWString("swtor_faction", "")
     if faction == "" then
         chat.AddText(Color(255,150,50), "[SW:TOR] Rejoignez une faction d'abord.")
         return
@@ -52,7 +52,7 @@ local function OpenShop()
     credBar:SetPos(0,24) credBar:SetSize(W,30)
     credBar.Paint = function(s,w,h)
         draw.RoundedBox(0,0,0,w,h,Color(20,20,40,200))
-        local creds = LocalData and LocalData.credits or 0
+        local creds = LocalPlayer():GetNWInt("swtor_credits", 0)
         draw.SimpleText("💰 " .. creds .. " crédits disponibles",
             "SWTOR_HUD_Medium", w/2, h/2, Color(220,180,40), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
     end
@@ -80,8 +80,8 @@ local function OpenShop()
             row:Dock(TOP)
             row:DockMargin(6,3,6,0)
 
-            local canAfford = (LocalData and LocalData.credits or 0) >= item.price
-            local gradeOk   = not item.grade_req or (LocalData and LocalData.grade or 1) >= item.grade_req
+            local canAfford = LocalPlayer():GetNWInt("swtor_credits", 0) >= item.price
+            local gradeOk   = not item.grade_req or LocalPlayer():GetNWInt("swtor_grade", 1) >= item.grade_req
             local available = canAfford and gradeOk
 
             row.Paint = function(s,w,h)
