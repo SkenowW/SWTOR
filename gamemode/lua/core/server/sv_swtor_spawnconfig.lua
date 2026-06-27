@@ -58,7 +58,9 @@ local function LoadSpawnsFromDB()
 end
 
 -- Charger au démarrage
-timer.Simple(3, LoadSpawnsFromDB)
+hook.Add("InitPostEntity", "SWTOR_LoadSpawns", function()
+    LoadSpawnsFromDB()
+end)
 
 -- ============================================================
 --  COMMANDES ADMIN POUR POSER LES SPAWNS

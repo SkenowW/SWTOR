@@ -102,7 +102,7 @@ SWTOR.FactionZones = {
 
 local cooldowns = {}  -- Anti-spam téléportation
 
-hook.Add("Think", "SWTOR_ZoneCheck", function()
+timer.Create("SWTOR_ZoneCheck", 0.2, 0, function()
     for _, ply in ipairs(player.GetAll()) do
         if not IsValid(ply) or not ply:Alive() then continue end
         local pos = ply:GetPos()
