@@ -9,6 +9,13 @@ util.AddNetworkString("SWTOR_AdminAction")
 util.AddNetworkString("SWTOR_AdminGetPlayers")
 util.AddNetworkString("SWTOR_AdminPlayersData")
 
+local function AdminLog(ply, action, target)
+    local targetName = IsValid(target) and target:Nick() or "Système"
+    local msg = string.format("[ADMIN] %s a fait '%s' sur %s", ply:Nick(), action, targetName)
+    print(msg) -- Affiche dans la console serveur
+
+end
+
 -- ── Envoyer la liste des joueurs au demandeur ──────────────
 net.Receive("SWTOR_AdminGetPlayers", function(len, ply)
     if not ply:IsAdmin() then return end
@@ -64,19 +71,23 @@ net.Receive("SWTOR_AdminAction", function(len, ply)
     local log = "[ADMIN] " .. ply:Nick() .. " → " .. action .. " sur " .. target:Nick()
 
     if action == "setfaction" then
+        AdminLog(ply, action, target)
         local ok, err = SWTOR.SetFaction(target, value)
         SWTOR.Notify(ply, ok and "Faction assignée: " .. value or err, ok and "success" or "error")
 
     elseif action == "promote" then
+        AdminLog(ply, action, target)
         local ok, err = SWTOR.PromotePlayer(target, ply)
         SWTOR.Notify(ply, ok and target:Nick() .. " promu !" or tostring(err),
             ok and "success" or "error")
 
     elseif action == "demote" then
+        AdminLog(ply, action, target)
         SWTOR.DemotePlayer(target, ply)
         SWTOR.Notify(ply, target:Nick() .. " rétrogradé.", "warning")
-
+        
     elseif action == "setgrade" then
+        AdminLog(ply, action, target)
         local g = tonumber(value)
         if g then
             local ok, err = SWTOR.SetGrade(target, g, ply)
@@ -85,20 +96,24 @@ net.Receive("SWTOR_AdminAction", function(len, ply)
         end
 
     elseif action == "givecredits" then
+        AdminLog(ply, action, target)
         local amount = tonumber(value) or 0
         SWTOR.GiveCredits(target, amount)
         SWTOR.Notify(ply, "+" .. amount .. " cr donnés à " .. target:Nick(), "success")
 
     elseif action == "teleport" then
+        AdminLog(ply, action, target)
         local ok, err = SWTOR.TeleportToPlanet(target, value)
         SWTOR.Notify(ply, ok and target:Nick() .. " téléporté sur " .. value or tostring(err),
             ok and "success" or "error")
 
     elseif action == "kill" then
+        AdminLog(ply, action, target)
         target:Kill()
         SWTOR.Notify(ply, target:Nick() .. " tué par admin.", "warning")
-
+        
     elseif action == "reset" then
+        AdminLog(ply, action, target)
         target.swtor_faction     = ""
         target.swtor_class       = ""
         target.swtor_grade       = 1
@@ -116,6 +131,7 @@ net.Receive("SWTOR_AdminAction", function(len, ply)
         SWTOR.Notify(ply, target:Nick() .. " réinitialisé.", "success")
 
     elseif action == "notify" then
+        AdminLog(ply, action, target)
         local msg = value ~= "" and value or "Message de l'administration."
         SWTOR.Notify(target, msg, "info")
         SWTOR.Notify(ply, "Notification envoyée.", "success")
