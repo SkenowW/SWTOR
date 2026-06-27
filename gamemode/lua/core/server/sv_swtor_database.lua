@@ -328,13 +328,13 @@ function SWTOR.SetGrade(ply, gradeIndex, promoter)
     -- Vérification permission si un promoteur est fourni
     if IsValid(promoter) then
         local req = gradeInfo.promo_req or "mod"
-        if req == "admin" and not promoter:IsAdmin() then
+        if req == "admin" and not SWTOR.IsAdmin(promoter) then
             SWTOR.Notify(promoter,
                 "❌ Grade réservé aux Administrateurs : " .. gradeInfo.name, "error")
             return false, "Permission insuffisante (admin requis)"
         end
         -- "mod" = au moins un flag de permission (IsSuperAdmin ou IsAdmin)
-        if req == "mod" and not promoter:IsAdmin() and not promoter:IsSuperAdmin() then
+        if req == "mod" and not SWTOR.IsAdmin(promoter) and not promoter:IsSuperAdmin() then
             -- Vérifier permission custom "swtor_promote"
             local hasPerm = false
             if ULib and ULib.ucl and ULib.ucl.query then
@@ -529,3 +529,20 @@ net.Receive("SWTOR_TeleportPlanet", function(len, ply)
     -- On téléporte le joueur
     SWTOR.TeleportToPlanet(ply, planetKey)
 end)
+
+-- Vérifie si le joueur a le droit d'accéder au panel admin
+function SWTOR.IsAdmin(ply)
+    -- 1. Check GMod / ULX / SAM standards
+    if ply:IsAdmin() or ply:IsSuperAdmin() then return true end
+    
+    -- 2. Check ton rang spécifique "Fondateur"
+    if ply:GetUserGroup() == "fondateur" then return true end
+    
+    -- 3. Check par niveau HRP (si tu veux que les niveaux 3+ soient admins)
+    local hrpKey = ply:GetNWString("swtor_hrp_rank", "")
+    if hrpKey ~= "" and SWTOR.HRP.Ranks[hrpKey] then
+        return SWTOR.HRP.Ranks[hrpKey].level >= 3 -- Niveaux 3, 4, 5
+    end
+
+    return false
+end

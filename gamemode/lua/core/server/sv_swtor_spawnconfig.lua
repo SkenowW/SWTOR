@@ -70,7 +70,7 @@ end)
 -- Pose un spawn à l'endroit exact où l'admin se trouve
 concommand.Add("swtor_setspawn", function(ply, cmd, args)
     if not IsValid(ply) then print("[SPAWN] Commande côté serveur uniquement") return end
-    if not ply:IsAdmin() then
+    if not SWTOR.IsAdmin(ply) then
         SWTOR.Notify(ply, "Permission refusée.", "error") return
     end
 
@@ -141,7 +141,7 @@ end)
 
 -- swtor_delspawn <id_db>
 concommand.Add("swtor_delspawn", function(ply, cmd, args)
-    if IsValid(ply) and not ply:IsAdmin() then return end
+    if IsValid(ply) and not SWTOR.IsAdmin(ply) then return end
     local id = tonumber(args[1])
     if not id then
         local printFn = IsValid(ply) and function(s) ply:ChatPrint(s) end or print
@@ -160,7 +160,7 @@ end)
 
 -- swtor_clearspawns <planète>
 concommand.Add("swtor_clearspawns", function(ply, cmd, args)
-    if IsValid(ply) and not ply:IsAdmin() then return end
+    if IsValid(ply) and not SWTOR.IsAdmin(ply) then return end
     local planetKey = args[1]
     if not planetKey then
         local printFn = IsValid(ply) and function(s) ply:ChatPrint(s) end or print

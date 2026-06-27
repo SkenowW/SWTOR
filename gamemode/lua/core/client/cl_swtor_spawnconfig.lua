@@ -13,7 +13,7 @@ local PreviewEntity   = nil
 --  OUTIL VISUEL — Voir où le spawn sera posé
 -- ============================================================
 local function OpenSpawnTool()
-    if not LocalPlayer():IsAdmin() then
+    if not SWTOR.IsAdmin(LocalPlayer()) then
         chat.AddText(Color(220,80,80), "[SPAWN] Admin requis.") return
     end
 
@@ -138,7 +138,7 @@ end
 --  LISTE DES SPAWNS CONFIGURÉS (lecture)
 -- ============================================================
 local function OpenSpawnList()
-    if not LocalPlayer():IsAdmin() then
+    if not SWTOR.IsAdmin(LocalPlayer()) then
         chat.AddText(Color(220,80,80), "[SPAWN] Admin requis.") return
     end
     if IsValid(SWTOR_SpawnList) then SWTOR_SpawnList:Remove() return end
@@ -250,7 +250,7 @@ concommand.Add("swtor_spawnlist",  OpenSpawnList)
 hook.Add("PlayerButtonDown", "SWTOR_SpawnToolBind", function(ply, btn)
     -- INSERT = touche discrète, admin seulement
     if btn == KEY_INSERT then
-        if LocalPlayer():IsAdmin() then
+        if SWTOR.IsAdmin(ply) then
             OpenSpawnTool()
         end
     end

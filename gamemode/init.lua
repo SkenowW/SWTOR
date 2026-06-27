@@ -113,7 +113,7 @@ end
 
 function GM:ShowSpare2(ply)
     -- F4 — panel admin si admin, sinon profil
-    if ply:IsAdmin() then
+    if SWTOR.IsAdmin(ply) then
         net.Start("SWTOR_OpenAdminPanel")
         net.Send(ply)
     else

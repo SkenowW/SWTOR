@@ -107,7 +107,7 @@ end)
 
 -- Commande admin pour déclencher manuellement
 concommand.Add("swtor_event", function(ply, cmd, args)
-    if IsValid(ply) and not ply:IsAdmin() then return end
+    if IsValid(ply) and not SWTOR.IsAdmin(ply) then return end
     local eventName = table.concat(args, " ")
     if eventName == "" then
         TriggerRandomEvent()

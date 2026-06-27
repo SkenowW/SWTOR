@@ -415,10 +415,10 @@ function SWTOR.CanPromote(promoter, factionKey, targetRank)
     local grade = SWTOR.GetGrade(factionKey, targetRank)
     if not grade then return false end
     if grade.promo_req == "admin" then
-        return promoter:IsAdmin()
+        return SWTOR.IsAdmin(promoter)
     end
     -- "mod" = IsSuperAdmin ou custom perm ULX
-    return promoter:IsAdmin() or promoter:IsSuperAdmin() or
+    return SWTOR.IsAdmin(promoter) or promoter:IsSuperAdmin() or
            (ULib and ULib.ucl and ULib.ucl.authedUsers and
             ULib.ucl.authedUsers[promoter:SteamID()] ~= nil)
 end

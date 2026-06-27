@@ -116,12 +116,12 @@ end)
 -- Commandes pour créer les zones
 local Setup = {}
 concommand.Add("swtor_training_corner1", function(ply)
-    if not IsValid(ply) or not ply:IsAdmin() then return end
+    if not IsValid(ply) or not SWTOR.IsAdmin(ply) then return end
     Setup[ply:SteamID()] = ply:GetPos()
     SWTOR.Notify(ply,"📍 Coin 1 posé. Va au coin opposé → swtor_training_corner2 <nom>","info")
 end)
 concommand.Add("swtor_training_corner2", function(ply, _, args)
-    if not IsValid(ply) or not ply:IsAdmin() then return end
+    if not IsValid(ply) or not SWTOR.IsAdmin(ply) then return end
     local c1 = Setup[ply:SteamID()]
     if not c1 then SWTOR.Notify(ply,"Pose d'abord le coin 1.","error") return end
     local c2    = ply:GetPos()

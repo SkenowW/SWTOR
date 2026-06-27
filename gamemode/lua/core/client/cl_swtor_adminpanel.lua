@@ -23,7 +23,7 @@ local function RequestPlayerList()
 end
 
 local function OpenAdminPanel()
-    if not LocalPlayer():IsAdmin() then
+    if not SWTOR.IsAdmin(LocalPlayer()) then
         chat.AddText(Color(220,80,80), "[SW:TOR] Accès refusé — Admin requis.")
         return
     end

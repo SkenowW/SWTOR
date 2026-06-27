@@ -18,7 +18,7 @@ end
 
 -- ── Envoyer la liste des joueurs au demandeur ──────────────
 net.Receive("SWTOR_AdminGetPlayers", function(len, ply)
-    if not ply:IsAdmin() then return end
+    if not SWTOR.IsAdmin(ply) then return end
 
     local list = {}
     for _, p in ipairs(player.GetAll()) do
@@ -45,7 +45,7 @@ end)
 
 -- ── Réception des actions du panel ────────────────────────
 net.Receive("SWTOR_AdminAction", function(len, ply)
-    if not ply:IsAdmin() then
+    if not SWTOR.IsAdmin(ply) then
         SWTOR.Notify(ply, "Permission refusée.", "error")
         return
     end

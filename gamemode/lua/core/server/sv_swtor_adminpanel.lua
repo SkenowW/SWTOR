@@ -16,7 +16,7 @@ util.AddNetworkString("SWTOR_AdminPlayersData")
 
 -- !swtor_setfaction <joueur> <faction>
 concommand.Add("swtor_setfaction", function(ply, cmd, args)
-    if IsValid(ply) and not ply:IsAdmin() then
+    if IsValid(ply) and not SWTOR.IsAdmin(ply) then
         ply:ChatPrint("[SWTOR] Permission refusée.")
         return
     end
@@ -49,7 +49,7 @@ end)
 
 -- !swtor_setgrade <joueur> <grade>
 concommand.Add("swtor_setgrade", function(ply, cmd, args)
-    if IsValid(ply) and not ply:IsAdmin() then return end
+    if IsValid(ply) and not SWTOR.IsAdmin(ply) then return end
     local targetName = args[1]
     local gradeNum   = tonumber(args[2])
     if not targetName or not gradeNum then return end
@@ -66,7 +66,7 @@ end)
 
 -- !swtor_promote <joueur>
 concommand.Add("swtor_promote", function(ply, cmd, args)
-    if IsValid(ply) and not ply:IsAdmin() then return end
+    if IsValid(ply) and not SWTOR.IsAdmin(ply) then return end
     local targetName = args[1]
     if not targetName then return end
     for _, p in ipairs(player.GetAll()) do
@@ -81,7 +81,7 @@ end)
 
 -- !swtor_demote <joueur>
 concommand.Add("swtor_demote", function(ply, cmd, args)
-    if IsValid(ply) and not ply:IsAdmin() then return end
+    if IsValid(ply) and not SWTOR.IsAdmin(ply) then return end
     local targetName = args[1]
     if not targetName then return end
     for _, p in ipairs(player.GetAll()) do
@@ -95,7 +95,7 @@ end)
 
 -- !swtor_givecredits <joueur> <montant>
 concommand.Add("swtor_givecredits", function(ply, cmd, args)
-    if IsValid(ply) and not ply:IsAdmin() then return end
+    if IsValid(ply) and not SWTOR.IsAdmin(ply) then return end
     local targetName = args[1]
     local amount     = tonumber(args[2])
     if not targetName or not amount then return end
@@ -112,7 +112,7 @@ end)
 
 -- !swtor_teleport <joueur> <planète>
 concommand.Add("swtor_teleport", function(ply, cmd, args)
-    if IsValid(ply) and not ply:IsAdmin() then return end
+    if IsValid(ply) and not SWTOR.IsAdmin(ply) then return end
     local targetName = args[1]
     local planetKey  = args[2]
     if not targetName or not planetKey then return end
@@ -129,7 +129,7 @@ end)
 
 -- !swtor_info <joueur>
 concommand.Add("swtor_info", function(ply, cmd, args)
-    if IsValid(ply) and not ply:IsAdmin() then return end
+    if IsValid(ply) and not SWTOR.IsAdmin(ply) then return end
     local targetName = args[1]
     local printFn = IsValid(ply) and function(s) ply:ChatPrint(s) end or print
     if not targetName then
@@ -164,7 +164,7 @@ end)
 
 -- !swtor_listplanets
 concommand.Add("swtor_listplanets", function(ply, cmd, args)
-    if IsValid(ply) and not ply:IsAdmin() then return end
+    if IsValid(ply) and not SWTOR.IsAdmin(ply) then return end
     local printFn = IsValid(ply) and function(s) ply:ChatPrint(s) end or print
     printFn("=== SW:TOR - Planètes disponibles ===")
     for key, planet in pairs(SWTOR.Planets) do
@@ -174,7 +174,7 @@ end)
 
 -- !swtor_listfactions
 concommand.Add("swtor_listfactions", function(ply, cmd, args)
-    if IsValid(ply) and not ply:IsAdmin() then return end
+    if IsValid(ply) and not SWTOR.IsAdmin(ply) then return end
     local printFn = IsValid(ply) and function(s) ply:ChatPrint(s) end or print
     printFn("=== SW:TOR - Factions ===")
     for key, faction in pairs(SWTOR.Factions) do
@@ -185,7 +185,7 @@ end)
 
 -- !swtor_resetplayer <joueur>  (remet à zéro)
 concommand.Add("swtor_resetplayer", function(ply, cmd, args)
-    if IsValid(ply) and not ply:IsAdmin() then return end
+    if IsValid(ply) and not SWTOR.IsAdmin(ply) then return end
     local targetName = args[1]
     if not targetName then return end
     for _, p in ipairs(player.GetAll()) do

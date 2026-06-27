@@ -159,7 +159,7 @@ end)
 --  SPAWNER D'ENTITÉS PAR ADMIN
 -- ============================================================
 net.Receive("SWTOR_SpawnEntity", function(len, ply)
-    if not ply:IsAdmin() then return end
+    if not SWTOR.IsAdmin(ply) then return end
     local eType   = net.ReadString()
     local pos     = ply:GetEyeTrace().HitPos + Vector(0,0,10)
 
@@ -186,7 +186,7 @@ end)
 --  COMMANDES CONSOLE SPAWN ENTITÉS
 -- ============================================================
 concommand.Add("swtor_spawn_holocron", function(ply, cmd, args)
-    if IsValid(ply) and not ply:IsAdmin() then return end
+    if IsValid(ply) and not SWTOR.IsAdmin(ply) then return end
     local faction = args[1] or "empire"
     local xp      = tonumber(args[2]) or 200
     local pos     = IsValid(ply) and (ply:GetEyeTrace().HitPos + Vector(0,0,10)) or Vector(0,0,64)
@@ -195,7 +195,7 @@ concommand.Add("swtor_spawn_holocron", function(ply, cmd, args)
 end)
 
 concommand.Add("swtor_spawn_crate", function(ply, cmd, args)
-    if IsValid(ply) and not ply:IsAdmin() then return end
+    if IsValid(ply) and not SWTOR.IsAdmin(ply) then return end
     local credits = tonumber(args[1]) or 150
     local pos     = IsValid(ply) and (ply:GetEyeTrace().HitPos + Vector(0,0,10)) or Vector(0,0,64)
     SpawnCrate(pos, credits, 300)

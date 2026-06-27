@@ -169,7 +169,7 @@ net.Receive("SWTOR_TeleportPlanet", function(len, ply)
     local canAccess = (planet.faction == ply.swtor_faction)
         or (planet.faction == "neutre")
         or (planet.type == "neutral")
-        or ply:IsAdmin()
+        or SWTOR.IsAdmin(ply)
 
     if not canAccess then
         SWTOR.Notify(ply, "Accès refusé à " .. planet.name .. ". Faction requise: " .. planet.faction, "error")

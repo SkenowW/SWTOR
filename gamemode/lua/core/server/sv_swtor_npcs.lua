@@ -143,7 +143,7 @@ hook.Add("InitPostEntity", "SWTOR_SpawnAllNPCs", function()
 end)
 
 concommand.Add("swtor_respawn_npcs", function(ply, cmd, args)
-    if IsValid(ply) and not ply:IsAdmin() then return end
+    if IsValid(ply) and not SWTOR.IsAdmin(ply) then return end
     local planet = args[1]
     if planet then
         SpawnPlanetNPCs(planet)

@@ -83,7 +83,7 @@ net.Receive("SWTOR_ApplyFaction", function(len, ply)
 
     -- Notification admins connectés
     for _, p in ipairs(player.GetAll()) do
-        if p:IsAdmin() then
+        if SWTOR.IsAdmin(p) then
             p:ChatPrint("[SWTOR] 📋 Nouvelle candidature : " .. ply:Nick() .. " → " .. SWTOR.Factions[factionKey].name)
         end
     end
@@ -93,7 +93,7 @@ end)
 --  APPROBATION / REFUS ADMIN
 -- ============================================================
 concommand.Add("swtor_approve", function(ply, cmd, args)
-    if IsValid(ply) and not ply:IsAdmin() then return end
+    if IsValid(ply) and not SWTOR.IsAdmin(ply) then return end
     local sid = args[1]
     if not sid then return end
 
@@ -130,7 +130,7 @@ concommand.Add("swtor_approve", function(ply, cmd, args)
 end)
 
 concommand.Add("swtor_reject", function(ply, cmd, args)
-    if IsValid(ply) and not ply:IsAdmin() then return end
+    if IsValid(ply) and not SWTOR.IsAdmin(ply) then return end
     local sid = args[1]
     if not sid then return end
     local reason = table.concat(args, " ", 2)
@@ -168,7 +168,7 @@ concommand.Add("swtor_reject", function(ply, cmd, args)
 end)
 
 concommand.Add("swtor_applications", function(ply, cmd, args)
-    if IsValid(ply) and not ply:IsAdmin() then return end
+    if IsValid(ply) and not SWTOR.IsAdmin(ply) then return end
     local printFn = IsValid(ply) and function(s) ply:ChatPrint(s) end or print
     printFn("=== SW:TOR — Candidatures en attente ===")
     local count = 0

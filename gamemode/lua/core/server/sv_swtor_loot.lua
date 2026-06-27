@@ -18,7 +18,7 @@ util.AddNetworkString("SWTOR_SetAuraAdmin")
 -- Assignées via commande console admin uniquement
 
 concommand.Add("swtor_setaura", function(ply, cmd, args)
-    if IsValid(ply) and not ply:IsAdmin() then
+    if IsValid(ply) and not SWTOR.IsAdmin(ply) then
         SWTOR.Notify(ply, "Permission refusée.", "error") return
     end
     local targetName = args[1]
@@ -225,7 +225,7 @@ end)
 
 -- Commande admin pour donner un cosmétique précis
 concommand.Add("swtor_givecosmetique", function(ply, cmd, args)
-    if IsValid(ply) and not ply:IsAdmin() then return end
+    if IsValid(ply) and not SWTOR.IsAdmin(ply) then return end
     local targetName = args[1]
     local itemKey    = args[2]
     local printFn    = IsValid(ply) and function(s) ply:ChatPrint(s) end or print
