@@ -25,6 +25,7 @@ local sharedFiles = {
     "lua/core/sh_swtor_workshop.lua",
     "lua/core/sh_swtor_loot.lua",
     "lua/core/sh_swtor_levels.lua",
+    "lua/core/sh_swtor_utils.lua",
 }
 
 
