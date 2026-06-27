@@ -99,7 +99,7 @@ hook.Add("PlayerSay", "SWTOR_ChatSpecial", function(ply, text)
     local ltext = string.lower(text)
 
     -- /annoncer (admin seulement)
-    if string.sub(ltext,1,10) == "/annoncer " and ply:IsAdmin() then
+    if string.sub(ltext,1,10) == "/annoncer " and SWTOR.IsAdmin(ply) then
         local msg = string.sub(text, 11)
         net.Start("SWTOR_RPChat")
             net.WriteUInt(4, 4)  -- type 4 = annonce
@@ -112,7 +112,7 @@ hook.Add("PlayerSay", "SWTOR_ChatSpecial", function(ply, text)
     end
 
     -- /event (admin)
-    if string.sub(ltext,1,7) == "/event " and ply:IsAdmin() then
+    if string.sub(ltext,1,7) == "/event " and SWTOR.IsAdmin(ply) then
         local msg = string.sub(text, 8)
         net.Start("SWTOR_RPChat")
             net.WriteUInt(5, 4)  -- type 5 = event
