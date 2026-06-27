@@ -15,7 +15,7 @@ local function OpenWardrobe()
         return
     end
 
-    local localFaction = LocalData and LocalData.faction or ""
+    local localFaction = LocalPlayer():GetNWString("swtor_faction", "")
     if localFaction == "" then
         chat.AddText(Color(255,150,50), "[SW:TOR] Vous devez choisir une faction d'abord.")
         return

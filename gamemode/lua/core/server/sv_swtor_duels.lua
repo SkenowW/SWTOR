@@ -246,6 +246,24 @@ hook.Add("PlayerShouldTakeDamage", "SWTOR_DuelDamage", function(victim, attacker
     end
 end)
 
+hook.Add("PlayerDisconnected", "SWTOR_DuelCleanup", function(ply)
+    local sid = ply:SteamID()
+    if SWTOR.Duels[sid] then
+        local opponent = SWTOR.Duels[sid].opponent
+        if IsValid(opponent) then
+            SWTOR.EndDuel(ply, opponent, ply) -- L'adversaire gagne par défaut
+            SWTOR.Notify(opponent, "Votre adversaire s'est déconnecté. Duel annulé.", "info")
+        end
+        SWTOR.Duels[sid] = nil
+    end
+    -- Nettoyer aussi si le joueur était la cible
+    for k, v in pairs(SWTOR.Duels) do
+        if v.opponent == ply then
+            SWTOR.Duels[k] = nil
+        end
+    end
+end)
+
 print("[SW:TOR] Système de duels chargé ✓")
 print("  /duel <nom>   — Défier un joueur")
 print("  /duel accept  — Accepter un duel")

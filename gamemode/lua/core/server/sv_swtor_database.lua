@@ -188,12 +188,27 @@ util.AddNetworkString("SWTOR_Notification")
 util.AddNetworkString("SWTOR_SetClass")
 
 function SWTOR.SyncPlayerData(ply)
-    -- L'arme fatale : On force le moteur de GMod à synchroniser ces variables nativement
+    -- 1. Expose les variables via Network Variables (NWVars)
+    -- Elles sont maintenant lisibles directement par ton HUD via GetNWString/GetNWInt
     ply:SetNWString("swtor_faction", ply.swtor_faction or "")
-    ply:SetNWString("swtor_class", ply.swtor_class or "")
-    ply:SetNWInt("swtor_grade", ply.swtor_grade or 1)
+    ply:SetNWString("swtor_class",   ply.swtor_class or "")
+    ply:SetNWString("swtor_planet",  ply.swtor_planet or "")
+    ply:SetNWString("swtor_title",   ply.swtor_title or "")
+    
+    ply:SetNWInt("swtor_grade",       ply.swtor_grade or 1)
+    ply:SetNWInt("swtor_xp",          ply.swtor_xp or 0)
+    ply:SetNWInt("swtor_credits",     ply.swtor_credits or 0)
+    ply:SetNWInt("swtor_kills",       ply.swtor_kills or 0)
+    ply:SetNWInt("swtor_deaths",      ply.swtor_deaths or 0)
+    ply:SetNWInt("swtor_stat_force",  ply.swtor_stat_force or 10)
+    ply:SetNWInt("swtor_stat_speed",  ply.swtor_stat_speed or 10)
+    ply:SetNWInt("swtor_stat_energy", ply.swtor_stat_energy or 10)
+    ply:SetNWInt("swtor_stat_points", ply.swtor_stat_points or 0)
+    ply:SetNWInt("swtor_duels_won",   ply.swtor_duels_won or 0)
+    ply:SetNWInt("swtor_duels_lost",  ply.swtor_duels_lost or 0)
 
-    -- On garde le système d'origine au cas où d'autres scripts en auraient besoin
+    -- 2. On garde le net message pour les systèmes legacy (Shop, etc.)
+    -- Comme ton HUD le lit et le vide, cela reste compatible sans créer de désynchronisation
     net.Start("SWTOR_SyncData")
         net.WriteString(ply.swtor_faction     or "")
         net.WriteString(ply.swtor_class       or "")
@@ -257,10 +272,6 @@ function SWTOR.SetFaction(ply, factionKey)
     -- On attend une demi-seconde pour que le réseau fasse son travail
     timer.Simple(0.5, function()
         if IsValid(ply) then
-            -- Patch d'urgence : on met à jour les tables client de force avant d'ouvrir le menu
-            ply:SendLua("LocalPlayer().swtor_faction = '" .. factionKey .. "'")
-            ply:SendLua("LocalData = LocalData or {} LocalData.faction = '" .. factionKey .. "'")
-            
             -- Au lieu d'un net message, on simule l'exécution de la commande par le joueur
             ply:ConCommand("swtor_class_menu")
         end

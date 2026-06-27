@@ -50,7 +50,8 @@ local DirColors = {
 
 -- ── Détecter la direction en temps réel (côté client) ─────
 hook.Add("Think", "SWTOR_DetectDir", function()
-    if not LocalData or LocalData.class == "" then return end
+    local myclass = LocalPlayer():GetNWString("swtor_class", "")
+    if myclass == "" then return end
     local wep = LocalPlayer():GetActiveWeapon()
     if not IsValid(wep) then return end
     -- Vérifier que c'est une arme de mêlée SW:TOR
@@ -67,7 +68,8 @@ end)
 
 -- ── Paint : affichage HUD ─────────────────────────────────
 hook.Add("HUDPaint", "SWTOR_SwingIndicator", function()
-    if not LocalData or LocalData.class == "" then return end
+    local myclass = LocalPlayer():GetNWString("swtor_class", "")
+    if myclass == "" then return end
     local wep = LocalPlayer():GetActiveWeapon()
     if not IsValid(wep) then return end
     local cls = wep:GetClass()
@@ -76,7 +78,7 @@ hook.Add("HUDPaint", "SWTOR_SwingIndicator", function()
     local sw, sh   = ScrW(), ScrH()
     local cx, cy   = sw/2, sh/2
     local now      = CurTime()
-    local faction  = LocalData.faction or ""
+    local faction  = LocalPlayer():GetNWString("swtor_faction", "")
     local fData    = SWTOR and SWTOR.Factions and SWTOR.Factions[faction]
     local fColor   = fData and fData.color or Color(200,200,200)
     local style    = SWTOR.Combat and SWTOR.Combat.GetStyle and
@@ -193,7 +195,8 @@ print("[SW:TOR] Indicateur de coup visuel chargé ✓")
 --  INDICATEUR PARADE (MAJ enfoncée = icône parade visible)
 -- ============================================================
 hook.Add("HUDPaint", "SWTOR_ParryIndicator", function()
-    if not LocalData or LocalData.class == "" then return end
+    local myclass = LocalPlayer():GetNWString("swtor_class", "")
+    if myclass == "" then return end
     local wep = LocalPlayer():GetActiveWeapon()
     if not IsValid(wep) or not wep.SaberStyle then return end
 

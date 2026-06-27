@@ -25,7 +25,7 @@ hook.Add("WeaponEquipped", "SWTOR_Rb655Config", function(wep, ply)
     RunConsoleCommand("rb655_color_b", tostring(b))
 
     -- Son d'activation selon faction
-    local faction = LocalData and LocalData.faction or ""
+    local faction = LocalPlayer():GetNWString("swtor_faction", "")
     if faction == "empire" then
         RunConsoleCommand("rb655_sound_set", "kylo")   -- Son grave/menaçant
     elseif faction == "republique" then
@@ -40,8 +40,10 @@ end)
 -- ============================================================
 local lastGrade = 0
 hook.Add("Think", "SWTOR_CheckGradeChange", function()
-    if not LocalData then return end
-    local grade = LocalData.grade or 1
+    local ply = LocalPlayer()
+    -- Vérifie que le joueur est bien "in-game" pour éviter les erreurs au chargement
+    if not IsValid(ply) then return end
+    local grade = LocalPlayer():GetNWInt("swtor_grade", 1)
     if grade ~= lastGrade then
         lastGrade = grade
         -- Demander une mise à jour du sabre au serveur

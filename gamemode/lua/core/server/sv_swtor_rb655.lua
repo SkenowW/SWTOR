@@ -50,74 +50,50 @@ local function GiveSaber(ply)
     local class   = ply.swtor_class   or ""
     local grade   = ply.swtor_grade   or 1
 
-    -- Choisir le type de sabre selon la voie
-    local saberClass = "weapon_lightsaber"  -- rb655 SWEP name
-
-    -- Couleur selon faction + voie
+    -- Définir la couleur (logique inchangée)
     local col = { r=255, g=255, b=255 }
-
     if faction == "empire" then
-        if class == "inquisiteur_sith" then
-            col = SaberColors.empire.sorcier
-        elseif class == "assassin" or string.find(class, "assassin") then
-            col = SaberColors.empire.assassin
-        elseif grade >= 19 then  -- Darth+
-            col = SaberColors.empire.darth
-        elseif grade >= 23 then  -- Empereur
-            col = SaberColors.empire.empereur
-        else
-            col = SaberColors.empire.default
-        end
-
+        if class == "inquisiteur_sith" then col = SaberColors.empire.sorcier
+        elseif class == "assassin" or string.find(class, "assassin") then col = SaberColors.empire.assassin
+        elseif grade >= 23 then col = SaberColors.empire.empereur
+        elseif grade >= 19 then col = SaberColors.empire.darth
+        else col = SaberColors.empire.default end
     elseif faction == "republique" then
-        if string.find(class, "gardien") then
-            col = SaberColors.republique.gardien
-        elseif string.find(class, "sentinelle") then
-            col = SaberColors.republique.sentinelle
-        elseif string.find(class, "erudit") then
-            col = SaberColors.republique.erudit
-        elseif string.find(class, "ombre") then
-            col = SaberColors.republique.ombre
-        elseif grade >= 24 then  -- Légende Jedi
-            col = SaberColors.republique.legende
-        elseif grade >= 17 then  -- Maître+
-            col = SaberColors.republique.maitre
-        else
-            col = SaberColors.republique.default
-        end
-
+        if string.find(class, "gardien") then col = SaberColors.republique.gardien
+        elseif string.find(class, "sentinelle") then col = SaberColors.republique.sentinelle
+        elseif string.find(class, "erudit") then col = SaberColors.republique.erudit
+        elseif string.find(class, "ombre") then col = SaberColors.republique.ombre
+        elseif grade >= 24 then col = SaberColors.republique.legende
+        elseif grade >= 17 then col = SaberColors.republique.maitre
+        else col = SaberColors.republique.default end
     elseif faction == "mandalorien" then
         col = SaberColors.mandalorien.default
     end
 
-    -- Retirer les vieux sabres
-    local oldWeapons = {
-        "swtor_lightsaber", "swtor_lightsaber_dual",
-        "swtor_lightsaber_double", "swtor_vibroblade", "weapon_lightsaber"
-    }
-    for _, w in ipairs(oldWeapons) do
-        if ply:HasWeapon(w) then ply:StripWeapon(w) end
-    end
+    -- OPTIMISATION : On cherche si le joueur a déjà le sabre
+    local wep = ply:GetWeapon("weapon_lightsaber")
 
-    -- Donner le sabre rb655
-    ply:Give(saberClass)
-    timer.Simple(0.3, function()
-        if not IsValid(ply) then return end
-        local wep = ply:GetWeapon(saberClass)
-        if not IsValid(wep) then return end
-
-        -- Appliquer la couleur via NWVars (rb655 les lit)
-        ply:SetNWInt("rb655_r", col.r)
-        ply:SetNWInt("rb655_g", col.g)
-        ply:SetNWInt("rb655_b", col.b)
-
-        -- Appliquer couleur directement sur le SWEP rb655
+    if IsValid(wep) then
+        -- Le sabre est déjà là, on met juste à jour la couleur sans le supprimer
         wep:SetNWInt("cr", col.r)
         wep:SetNWInt("cg", col.g)
         wep:SetNWInt("cb", col.b)
-
-        ply:SelectWeapon(saberClass)
-    end)
+        -- Pas besoin de Strip/Give, le changement est immédiat
+    else
+        -- Le sabre n'est pas là, on le donne
+        ply:Give("weapon_lightsaber")
+        
+        -- On utilise un timer très court pour configurer l'arme une fois qu'elle est bien créée
+        timer.Simple(0.1, function()
+            if not IsValid(ply) then return end
+            local newWep = ply:GetWeapon("weapon_lightsaber")
+            if IsValid(newWep) then
+                newWep:SetNWInt("cr", col.r)
+                newWep:SetNWInt("cg", col.g)
+                newWep:SetNWInt("cb", col.b)
+            end
+        end)
+    end
 end
 
 -- ============================================================
