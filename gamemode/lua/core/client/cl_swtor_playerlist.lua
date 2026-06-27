@@ -46,7 +46,7 @@ local function OpenPlayerList()
         surface.SetDrawColor(80, 60, 20, 120)
         surface.DrawOutlinedRect(0, 0, w, h, 2)
     end
-
+    
     -- Bouton fermer (X)
     local closeBtn = vgui.Create("DButton", frame)
     closeBtn:SetPos(W - 28, 4)
@@ -216,6 +216,24 @@ timer.Create("SWTOR_PlayerListRefresh", 5, 0, function()
     end
 end)
 
+-- Initialisation de la table si elle n'existe pas
+_G.PlayerRanks = _G.PlayerRanks or {}
+
+-- Réception de la mise à jour (sync globale ou changement unitaire)
+net.Receive("SWTOR_HRPSync", function()
+    local entIndex = net.ReadUInt(16)
+    local rank     = net.ReadString()
+
+    -- Si le grade est vide, on supprime de la table, sinon on ajoute
+    if rank == "" then
+        _G.PlayerRanks[entIndex] = nil
+    else
+        _G.PlayerRanks[entIndex] = rank
+    end
+    
+    -- Optionnel : Debug pour vérifier que le client reçoit bien l'info
+    print("[HRP Sync] Reçu : EntIndex " .. entIndex .. " -> " .. rank)
+end)
 concommand.Add("swtor_players", OpenPlayerList)
 
 print("[SW:TOR] Panel joueurs F2 chargé ✓")

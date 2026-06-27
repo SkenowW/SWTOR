@@ -23,6 +23,7 @@ local function RequestPlayerList()
 end
 
 local function OpenAdminPanel()
+    print(LocalPlayer():GetUserGroup())
     if not SWTOR.IsAdmin(LocalPlayer()) then
         chat.AddText(Color(220,80,80), "[SW:TOR] Accès refusé — Admin requis.")
         return
@@ -202,17 +203,37 @@ local function OpenAdminPanel()
         Section("FACTION")
         -- Sélecteur faction
         local factionCombo = vgui.Create("DComboBox", rightContent)
-        factionCombo:SetPos(10,y) factionCombo:SetSize(rw-20,26)
+        factionCombo:SetPos(10, y) 
+        factionCombo:SetSize(rw - 20, 26)
         factionCombo:SetFont("SWTOR_HUD_Small")
-        factionCombo:AddChoice("empire",       nil, pdata.faction == "empire")
-        factionCombo:AddChoice("republique",   nil, pdata.faction == "republique")
-        factionCombo:AddChoice("mandalorien",  nil, pdata.faction == "mandalorien")
+
+        -- Ici, on passe le "code" (data) en 2ème argument
+        factionCombo:AddChoice("Empire", "empire", pdata.faction == "empire")
+        factionCombo:AddChoice("République", "republique", pdata.faction == "republique")
+        factionCombo:AddChoice("Mandalorien", "mandalorien", pdata.faction == "mandalorien")
+
         y = y + 32
 
-        ActionBtn("✔ Assigner cette faction", nil, 28, Color(50,100,50,200), function()
-            local _, selected = factionCombo:GetSelected()
-            SWTOR_Admin_Send("setfaction", pdata.steamid, selected)
-        end)
+        ActionBtn("✔ Assigner cette faction", nil, 28, Color(50, 100, 50, 200), function()
+    local _, value = factionCombo:GetSelected()
+    
+    -- Utilise ici les mêmes écritures que dans tes AddChoice
+    local factionMapping = {
+        ["empire"] = "empire",
+        ["republique"] = "republique",
+        ["mandalorien"] = "mandalorien"
+    }
+
+    local selectedData = factionMapping[value]
+    
+    if selectedData then
+        print("[DEBUG] Envoi du changement faction : " .. selectedData)
+        SWTOR_Admin_Send("setfaction", pdata.steamid, selectedData)
+    else
+        print("[DEBUG] Valeur reçue du combo : " .. tostring(value))
+        LocalPlayer():ChatPrint("Erreur : Faction non reconnue (" .. tostring(value) .. ")")
+    end
+end)
         y = y + 34
 
         Section("GRADE")

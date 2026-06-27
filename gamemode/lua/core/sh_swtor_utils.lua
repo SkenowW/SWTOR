@@ -6,18 +6,24 @@ SWTOR = SWTOR or {}
 
 -- Vérifie si le joueur a le droit d'accéder au panel admin
 function SWTOR.IsAdmin(ply)
-    -- 1. Check GMod / ULX / SAM standards
-    if ply:IsAdmin() or ply:IsSuperAdmin() then return true end
-    
-    -- 2. Check ton rang spécifique "Fondateur"
-    if ply:GetUserGroup() == "fondateur" then return true end
-    
-    -- 3. Check par niveau HRP (si tu veux que les niveaux 3+ soient admins)
-    local hrpKey = ply:GetNWString("swtor_hrp_rank", "")
-    if hrpKey ~= "" and SWTOR.HRP.Ranks[hrpKey] then
-        return SWTOR.HRP.Ranks[hrpKey].level >= 3 -- Niveaux 3, 4, 5
+    if not IsValid(ply) then return false end
+
+    -- 1. PONT HRP : Si le grade HRP est "fondateur", on autorise tout
+    -- On utilise GetNWString pour lire la valeur synchronisée en temps réel
+    local hrpRank = ply:GetNWString("swtor_hrp", "")
+    if hrpRank == "fondateur" then 
+        return true 
     end
 
+    -- 2. Sécurité native (si tu deviens superadmin par ULX un jour)
+    if ply:IsSuperAdmin() then return true end
+    
+    -- 3. Ton système de niveaux HRP (Admin = niv 3, Resp = niv 4, Fondateur = niv 5)
+    local rankData = SWTOR.HRP.Ranks[hrpRank]
+    if rankData and rankData.level >= 3 then
+        return true
+    end
+    
     return false
 end
 
