@@ -83,7 +83,7 @@ end
 function SWEP:PrimaryAttack()
     -- MAJ + Clic = PARADE (prioritaire sur l'attaque)
     if SERVER then
-        local cmd = ply:GetCurrentCommand()
+        local cmd = self:GetOwner():GetCurrentCommand()
         if cmd and bit.band(cmd:GetButtons(), IN_SPEED) ~= 0 then
             -- MAJ enfoncée → activer la parade
             if SWTOR.Parry and SWTOR.Parry.DoParry then

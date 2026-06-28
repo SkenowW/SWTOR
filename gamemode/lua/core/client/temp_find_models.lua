@@ -26,3 +26,15 @@ concommand.Add("swtor_findmodels_cl", function()
         print(v)
     end
 end)
+
+-- Debug : Lister toutes les armes disponibles
+if CLIENT then
+    print("--- DÉBUT DE RECHERCHE DES ARMES ---")
+    local weapons = scripted_ents.GetSpawnable()
+    for name, tbl in pairs(weapons) do
+        if tbl.Base and tbl.Base:find("weapon") then
+            print("[WEAPON DEBUG] Nom: " .. (tbl.PrintName or "Inconnu") .. " | Class: " .. name)
+        end
+    end
+    print("--- FIN DE RECHERCHE ---")
+end

@@ -3,7 +3,7 @@
 --  lua/weapons/swtor_blaster_dual/shared.lua
 --  Deux pistolets alternés — rapide, mobile, semi-auto
 -- ============================================================
-
+SWEP.Base           = "weapon_base"
 SWEP.PrintName      = "Blasters Jumelés"
 SWEP.Author         = "SW:TOR RP"
 SWEP.Category       = "SW:TOR RP"

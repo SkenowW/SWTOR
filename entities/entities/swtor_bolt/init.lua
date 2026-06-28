@@ -15,14 +15,15 @@ ENT.Spawnable    = false
 function ENT:Initialize()
     self:SetModel("models/hunter/misc/sphere025x025.mdl")
     self:SetMoveType(MOVETYPE_VPHYSICS)
-    self:SetSolid(SOLID_SPHERE)
+    self:PhysicsInit(SOLID_VPHYSICS)
+    self:SetSolid(SOLID_VPHYSICS)
     self:SetCollisionGroup(COLLISION_GROUP_PROJECTILE)
-    self:PhysicsInit(SOLID_SPHERE)
-
+    
     local phys = self:GetPhysicsObject()
     if IsValid(phys) then
         phys:EnableGravity(false)
         phys:SetMass(0.1)
+        phys:Wake()
     end
 
     self:SetRenderMode(RENDERMODE_NONE)  -- Invisible côté serveur, dessiné côté client

@@ -43,17 +43,17 @@ print("[SW:TOR RP DEBUG] " .. count .. " fichiers partagés chargés avec succè
 if SERVER then
     local csFiles = {
         -- Weapons
-        "lua/weapons/swtor_lightsaber/shared.lua",
-        "lua/weapons/swtor_lightsaber_dual/shared.lua",
-        "lua/weapons/swtor_lightsaber_double/shared.lua",
-        "lua/weapons/swtor_vibroblade/shared.lua",
-        "lua/weapons/swtor_blaster/shared.lua",
-        "lua/weapons/swtor_blaster_heavy/shared.lua",
-        "lua/weapons/swtor_blaster_dual/shared.lua",
-        "lua/weapons/swtor_sniper/shared.lua",
+        "SWTOR_RP/entities/weapons/swtor_lightsaber/shared.lua",
+        "SWTOR_RP/entities/weapons/swtor_lightsaber_dual/shared.lua",
+        "SWTOR_RP/entities/weapons/swtor_lightsaber_double/shared.lua",
+        "SWTOR_RP/entities/weapons/swtor_vibroblade/shared.lua",
+        "SWTOR_RP/entities/weapons/swtor_blaster/shared.lua",
+        "SWTOR_RP/entities/weapons/swtor_blaster_heavy/shared.lua",
+        "SWTOR_RP/entities/weapons/swtor_blaster_dual/shared.lua",
+        "SWTOR_RP/entities/weapons/swtor_sniper/shared.lua",
         -- Entités
-        "lua/entities/swtor_bolt/shared.lua",
-        "lua/entities/swtor_bolt/cl_init.lua",
+        "SWTOR_RP/entities/entities/swtor_bolt/shared.lua",
+        "SWTOR_RP/entities/entities/swtor_bolt/cl_init.lua",
         -- Client
         "lua/core/client/cl_swtor_hud.lua",
         "lua/core/client/cl_swtor_chat.lua",
