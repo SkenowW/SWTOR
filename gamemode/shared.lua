@@ -75,6 +75,7 @@ if SERVER then
         "lua/core/client/cl_swtor_loot.lua",
         "lua/core/client/cl_swtor_training.lua",
         "lua/core/client/cl_swtor_swingindicator.lua",
+        "lua/core/client/temp_find_models.lua",
     }
     local count = 0
     for _, f in ipairs(csFiles) do 

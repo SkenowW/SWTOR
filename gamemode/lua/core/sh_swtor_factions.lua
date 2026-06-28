@@ -31,207 +31,160 @@ SWTOR.Factions["empire"] = {
 
 SWTOR.Grades["empire"] = {
 
+    -- ── GRADES DE BASE (Modérateurs) ───────────────────────
     { rank=1,  name="Novice",
-      hp=250,   armor=0,    force=50,  speed=70,
+      hp=250,   armor=0,     force=50,   speed=70,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=50,  promo_req="mod",
-      models={
-          "models/sith1/sith1.mdl",
-      }},
+      models={"models/player/gingers_sith_basic/gingers_sith_basic_trooper.mdl"} },
 
     { rank=2,  name="Acolyte",
-      hp=360,   armor=0,    force=70,  speed=80,
+      hp=360,   armor=0,     force=70,   speed=80,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=100, promo_req="mod",
-      models={
-          "models/player/swtor/arsenic/exp/newimpguard.mdl",
-      }},
+      models={"models/player/sitharmor/sitharmor_pm.mdl"} },
 
     { rank=3,  name="Inquisiteur",
-      hp=410,   armor=0,    force=80,  speed=110,
+      hp=410,   armor=0,     force=80,   speed=110,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=150, promo_req="mod",
-      models={
-          "models/player/swtor/arsenic/java/thanaton.mdl",
-      }},
+      models={"models/player/valley/xalek.mdl"} },
 
     { rank=4,  name="Guerrier Sith",
-      hp=470,   armor=80,   force=80,  speed=100,
+      hp=470,   armor=80,    force=80,   speed=100,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=200, promo_req="mod",
-      models={
-          "models/player/swtor/arsenic/miles/miles.mdl",
-      }},
+      models={"models/player/malacore/swtor_tulak_pm/swtor_tulak.mdl"} },
 
-    -- Voie Ravageur
+    -- ── VOIE DU RAVAGEUR ──
     { rank=5,  name="Ravageur",
-      hp=1100,  armor=200,  force=110, speed=120,
+      hp=1100,  armor=200,   force=110,  speed=120,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=300, promo_req="mod", voie="ravageur",
-      models={
-          "models/player/gingers_sith_basic/gingers_sith_basic_trooper.mdl",
-      }},
+      models={"models/player/valley/zakuul/zakuul_black.mdl"} },
 
     { rank=6,  name="Grand Ravageur",
-      hp=1400,  armor=200,  force=110, speed=120,
+      hp=1400,  armor=200,   force=110,  speed=120,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=400, promo_req="mod", voie="ravageur",
-      models={
-          "models/player/gingers_sith_basic/gingers_sith_basic_officer.mdl",
-      }},
+      models={"models/player/valley/zakuul/zakuul_black.mdl"} },
 
     { rank=7,  name="Maître des Ravageurs",
-      hp=1700,  armor=300,  force=120, speed=120,
+      hp=1700,  armor=300,   force=120,  speed=120,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=500, promo_req="mod", voie="ravageur",
-      models={
-          "models/player/gingers_sith_basic/gingers_sith_basic_commander.mdl",
-      }},
+      models={"models/player/grizzlerules/whitesith/whitesith.mdl"} },
 
-    -- Voie Maraudeur
+    -- ── VOIE DU MARAUDEUR ──
     { rank=8,  name="Maraudeur",
-      hp=1000,  armor=100,  force=130, speed=140,
+      hp=1000,  armor=100,   force=130,  speed=140,
       weapon="swtor_lightsaber_dual", weapon_style="dual",
       salary=300, promo_req="mod", voie="maraudeur",
-      models={
-          "models/player/gingers_sith_red/gingers_sith_red_trooper.mdl",
-      }},
+      models={"models/player/malacore/swtor_tulak_pm/swtor_tulak.mdl"} },
 
     { rank=9,  name="Grand Maraudeur",
-      hp=1100,  armor=100,  force=130, speed=140,
+      hp=1100,  armor=100,   force=130,  speed=140,
       weapon="swtor_lightsaber_dual", weapon_style="dual",
       salary=400, promo_req="mod", voie="maraudeur",
-      models={
-          "models/player/gingers_sith_red/gingers_sith_red_officer.mdl",
-      }},
+      models={"models/player/malacore/swtor_tulak_pm/swtor_tulak.mdl"} },
 
     { rank=10, name="Maître des Maraudeurs",
-      hp=1200,  armor=200,  force=130, speed=140,
+      hp=1200,  armor=200,   force=130,  speed=140,
       weapon="swtor_lightsaber_dual", weapon_style="dual",
       salary=500, promo_req="mod", voie="maraudeur",
-      models={
-          "models/player/gingers_sith_red/gingers_sith_red_commander.mdl",
-      }},
+      models={"models/player/grizzlerules/purplesith/purplesith.mdl"} },
 
-    -- Voie Sorcier
+    -- ── VOIE DU SORCIER ──
     { rank=11, name="Sorcier",
-      hp=900,   armor=0,    force=130, speed=140,
+      hp=900,   armor=0,     force=130,  speed=140,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=300, promo_req="mod", voie="sorcier",
-      models={
-          "models/player/gingers_sith_grey/gingers_sith_grey_trooper.mdl",
-      }},
+      models={"models/player/gingers_sith_red/gingers_sith_red_trooper.mdl"} },
 
     { rank=12, name="Grand Sorcier",
-      hp=1100,  armor=0,    force=130, speed=140,
+      hp=1100,  armor=0,     force=130,  speed=140,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=400, promo_req="mod", voie="sorcier",
-      models={
-          "models/player/gingers_sith_grey/gingers_sith_grey_officer.mdl",
-      }},
+      models={"models/player/gingers_sith_red/gingers_sith_red_officer.mdl"} },
 
     { rank=13, name="Maître des Sorciers",
-      hp=1300,  armor=0,    force=130, speed=140,
+      hp=1300,  armor=0,     force=130,  speed=140,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=500, promo_req="mod", voie="sorcier",
-      models={
-          "models/player/gingers_sith_grey/gingers_sith_grey_commander.mdl",
-      }},
+      models={"models/player/grizzlerules/bluesith/bluesith.mdl"} },
 
-    -- Voie Assassin
+    -- ── VOIE DE L'ASSASSIN ──
     { rank=14, name="Assassin",
-      hp=700,   armor=100,  force=160, speed=200,
+      hp=700,   armor=100,   force=160,  speed=200,
       weapon="swtor_lightsaber_double", weapon_style="double",
       salary=300, promo_req="mod", voie="assassin",
-      models={
-          "models/player/gingers_sith_gold/gingers_sith_gold_trooper.mdl",
-      }},
+      models={"models/player/grizzlerules/sithtrooper/sithtrooper.mdl"} },
 
     { rank=15, name="Grand Assassin",
-      hp=900,   armor=100,  force=160, speed=200,
+      hp=900,   armor=100,   force=160,  speed=200,
       weapon="swtor_lightsaber_double", weapon_style="double",
       salary=400, promo_req="mod", voie="assassin",
-      models={
-          "models/player/gingers_sith_gold/gingers_sith_gold_officer.mdl",
-      }},
+      models={"models/player/grizzlerules/sithtrooper/sithtrooper.mdl"} },
 
     { rank=16, name="Maître des Assassins",
-      hp=1100,  armor=100,  force=160, speed=200,
+      hp=1100,  armor=100,   force=160,  speed=200,
       weapon="swtor_lightsaber_double", weapon_style="double",
       salary=500, promo_req="mod", voie="assassin",
-      models={
-          "models/player/gingers_sith_gold/gingers_sith_gold_commander.mdl",
-      }},
+      models={"models/player/grizzlerules/bluesith/bluesith.mdl"} },
 
-    -- Haut Commandement
+    -- ── HAUT COMMANDEMENT SITH (Admin uniquement) ──────────
     { rank=17, name="Seigneur Inquisiteur",
-      hp=2000,  armor=200,  force=200, speed=200,
+      hp=2000,  armor=200,   force=200,  speed=200,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=1000, promo_req="admin",
-      models={
-          "models/player/swtor/arsenic/java/thanaton.mdl",
-      }},
+      models={"models/player/valley/baras.mdl"} },
 
     { rank=18, name="Seigneur Guerrier",
-      hp=2300,  armor=300,  force=200, speed=190,
+      hp=2300,  armor=300,   force=200,  speed=190,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=1000, promo_req="admin",
-      models={
-          "models/player/swtor/arsenic/nemesis/nemesistest.mdl",
-      }},
+      models={"models/player/valley/baras.mdl"} },
 
     { rank=19, name="Darth Inquisiteur",
-      hp=2300,  armor=200,  force=200, speed=200,
+      hp=2300,  armor=200,   force=200,  speed=200,
       weapon="swtor_lightsaber_double", weapon_style="double",
       salary=1500, promo_req="admin",
-      models={
-          "models/player/swtor/arsenic/exp/emperor.mdl",
-      }},
+      models={"models/player/valley/baras.mdl"} },
 
     { rank=20, name="Darth Guerrier",
-      hp=2600,  armor=400,  force=200, speed=190,
+      hp=2600,  armor=400,   force=200,  speed=190,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=1500, promo_req="admin",
-      models={
-          "models/player/swtor/arsenic/tyler/zabraksith.mdl",
-      }},
+      models={"models/player/valley/baras.mdl"} },
 
-    -- Corps de l'Empereur
+    -- ── CORPS DE L'EMPEREUR ──
     { rank=21, name="Furie de l'Empereur",
-      hp=3500,  armor=500,  force=200, speed=220,
+      hp=3500,  armor=500,   force=200,  speed=220,
       weapon="swtor_lightsaber_dual", weapon_style="dual",
       salary=3000, promo_req="admin",
       exclusive_aura="aura_furie",
-      models={
-          "models/player/swtor/arsenic/exp/apex.mdl",
-      }},
+      models={"models/player/malacore/swtor_tulak_pm/swtor_tulak.mdl"} },
 
     { rank=22, name="Main de l'Empereur",
-      hp=2700,  armor=400,  force=230, speed=220,
+      hp=2700,  armor=400,   force=230,  speed=220,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=3000, promo_req="admin",
       exclusive_aura="aura_mains",
-      models={
-          "models/player/swtor/arsenic/exp/overwatch.mdl",
-      }},
+      models={"models/player/valley/vitiate.mdl"} },
 
     { rank=23, name="Voix de l'Empereur",
-      hp=8500,  armor=1500, force=350, speed=260,
+      hp=8500,  armor=1500,  force=350,  speed=260,
       weapon="swtor_lightsaber_double", weapon_style="double",
       salary=5000, promo_req="admin",
       exclusive_aura="aura_mains",
-      models={
-          "models/player/swtor/arsenic/exp/emperor2.mdl",
-      }},
+      models={"models/player/valley/vitiate.mdl"} },
 
     { rank=24, name="Empereur",
       hp=75000, armor=25000, force=1500, speed=400,
       weapon="swtor_lightsaber_double", weapon_style="double",
       salary=10000, promo_req="admin",
       exclusive_aura="aura_empereur",
-      models={
-          "models/player/malacore/swtor_tulak.mdl",
-      }},
+      models={"models/player/valley/vitiate.mdl"} },
 }
 
 -- ============================================================
@@ -250,207 +203,157 @@ SWTOR.Factions["republique"] = {
 
 SWTOR.Grades["republique"] = {
 
+    -- ── GRADES DE BASE (Modérateurs) ───────────────────────
     { rank=1,  name="Novice",
-      hp=250,   armor=0,    force=50,  speed=70,
+      hp=250,   armor=0,     force=50,   speed=70,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=50,  promo_req="mod",
-      models={
-          "models/jedi2/jedi2.mdl",
-      }},
+      models={"models/player/lgn/padawan male/padawan.mdl"} },
 
     { rank=2,  name="Apprenti",
-      hp=360,   armor=0,    force=70,  speed=80,
+      hp=360,   armor=0,     force=70,   speed=80,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=100, promo_req="mod",
-      models={
-          "models/player/swtor/arsenic/jokal/jokal.mdl",
-      }},
+      models={"models/player/lgn/padawan male/padawan.mdl"} },
 
     { rank=3,  name="Consulaire",
-      hp=410,   armor=0,    force=80,  speed=110,
+      hp=410,   armor=0,     force=80,   speed=110,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=150, promo_req="mod",
-      models={
-          "models/player/valley/jaric.mdl",
-      }},
+      models={"models/player/lgn/jedi knight female/jedi knight female.mdl"} },
 
     { rank=4,  name="Chevalier",
-      hp=470,   armor=80,   force=80,  speed=100,
+      hp=470,   armor=80,    force=80,   speed=100,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=200, promo_req="mod",
-      models={
-          "models/player/valley/jensyn.mdl",
-      }},
+      models={"models/player/lgn/jedi knight male/jedi knight male.mdl"} },
 
-    -- Voie Gardien
+    -- ── VOIES JEDI (Gardiens, Sentinelles, Érudits, Ombres) ──
     { rank=5,  name="Gardien",
-      hp=1100,  armor=200,  force=110, speed=120,
+      hp=1100,  armor=200,   force=110,  speed=120,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=300, promo_req="mod", voie="gardien",
-      models={
-          "models/player/gingers_republic_blue/gingers_republic_blue_trooper.mdl",
-      }},
+      models={"models/player/jedi/human.mdl"} },
 
     { rank=6,  name="Grand Gardien",
-      hp=1400,  armor=200,  force=110, speed=120,
+      hp=1400,  armor=200,   force=110,  speed=120,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=400, promo_req="mod", voie="gardien",
-      models={
-          "models/player/gingers_republic_blue/gingers_republic_blue_officer.mdl",
-      }},
+      models={"models/player/jedi/human.mdl"} },
 
     { rank=7,  name="Maître des Gardiens",
-      hp=1700,  armor=300,  force=120, speed=120,
+      hp=1700,  armor=300,   force=120,  speed=120,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=500, promo_req="mod", voie="gardien",
-      models={
-          "models/player/gingers_republic_blue/gingers_republic_blue_commander.mdl",
-      }},
+      models={"models/player/lgn/jedi master/jedi master.mdl"} },
 
-    -- Voie Sentinelle
     { rank=8,  name="Sentinelle",
-      hp=1000,  armor=100,  force=130, speed=140,
+      hp=1000,  armor=100,   force=130,  speed=140,
       weapon="swtor_lightsaber_dual", weapon_style="dual",
       salary=300, promo_req="mod", voie="sentinelle",
-      models={
-          "models/player/gingers_republic_green/gingers_republic_green_trooper.mdl",
-      }},
+      models={"models/player/lgn/jedi knight male/jedi knight male.mdl"} },
 
     { rank=9,  name="Grande Sentinelle",
-      hp=1100,  armor=100,  force=130, speed=140,
+      hp=1100,  armor=100,   force=130,  speed=140,
       weapon="swtor_lightsaber_dual", weapon_style="dual",
       salary=400, promo_req="mod", voie="sentinelle",
-      models={
-          "models/player/gingers_republic_green/gingers_republic_green_officer.mdl",
-      }},
+      models={"models/player/lgn/jedi knight male/jedi knight male.mdl"} },
 
     { rank=10, name="Maître des Sentinelles",
-      hp=1200,  armor=200,  force=130, speed=140,
+      hp=1200,  armor=200,   force=130,  speed=140,
       weapon="swtor_lightsaber_dual", weapon_style="dual",
       salary=500, promo_req="mod", voie="sentinelle",
-      models={
-          "models/player/gingers_republic_green/gingers_republic_green_commander.mdl",
-      }},
+      models={"models/player/lgn/jedi master/jedi master.mdl"} },
 
-    -- Voie Érudit
     { rank=11, name="Érudit",
-      hp=900,   armor=0,    force=130, speed=140,
+      hp=900,   armor=0,     force=130,  speed=140,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=300, promo_req="mod", voie="erudit",
-      models={
-          "models/player/gingers_republic_white/gingers_republic_white_trooper.mdl",
-      }},
+      models={"models/player/jedi/togruta.mdl"} },
 
     { rank=12, name="Grand Érudit",
-      hp=1100,  armor=0,    force=130, speed=140,
+      hp=1100,  armor=0,     force=130,  speed=140,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=400, promo_req="mod", voie="erudit",
-      models={
-          "models/player/gingers_republic_white/gingers_republic_white_officer.mdl",
-      }},
+      models={"models/player/jedi/togruta.mdl"} },
 
     { rank=13, name="Maître des Érudits",
-      hp=1300,  armor=0,    force=130, speed=140,
+      hp=1300,  armor=0,     force=130,  speed=140,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=500, promo_req="mod", voie="erudit",
-      models={
-          "models/player/gingers_republic_white/gingers_republic_white_commander.mdl",
-      }},
+      models={"models/player/valley/kira.mdl"} },
 
-    -- Voie Ombre
     { rank=14, name="Ombre",
-      hp=700,   armor=100,  force=160, speed=200,
+      hp=700,   armor=100,   force=160,  speed=200,
       weapon="swtor_lightsaber_double", weapon_style="double",
       salary=300, promo_req="mod", voie="ombre",
-      models={
-          "models/player/gingers_republic_brown/gingers_republic_brown_trooper.mdl",
-      }},
+      models={"models/player/jedi/human.mdl"} },
 
     { rank=15, name="Grande Ombre",
-      hp=900,   armor=100,  force=160, speed=200,
+      hp=900,   armor=100,   force=160,  speed=200,
       weapon="swtor_lightsaber_double", weapon_style="double",
       salary=400, promo_req="mod", voie="ombre",
-      models={
-          "models/player/gingers_republic_brown/gingers_republic_brown_officer.mdl",
-      }},
+      models={"models/player/jedi/human.mdl"} },
 
     { rank=16, name="Maître des Ombres",
-      hp=1100,  armor=100,  force=160, speed=200,
+      hp=1100,  armor=100,   force=160,  speed=200,
       weapon="swtor_lightsaber_double", weapon_style="double",
       salary=500, promo_req="mod", voie="ombre",
-      models={
-          "models/player/gingers_republic_brown/gingers_republic_brown_commander.mdl",
-      }},
+      models={"models/player/valley/senya.mdl"} },
 
-    -- Haut Commandement
+    -- ── HAUT COMMANDEMENT JEDI (Admin uniquement) ──────────
     { rank=17, name="Maître Jedi Consulaire",
-      hp=2000,  armor=200,  force=200, speed=200,
+      hp=2000,  armor=200,   force=200,  speed=200,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=1000, promo_req="admin",
-      models={
-          "models/player/valley/kira.mdl",
-      }},
+      models={"models/player/lgn/jedi master/jedi master.mdl"} },
 
     { rank=18, name="Maître Jedi Guerrier",
-      hp=2300,  armor=300,  force=200, speed=190,
+      hp=2300,  armor=300,   force=200,  speed=190,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=1000, promo_req="admin",
-      models={
-          "models/player/valley/aric.mdl",
-      }},
+      models={"models/player/lgn/jedi master/jedi master.mdl"} },
 
     { rank=19, name="Grand Maître Jedi Consulaire",
-      hp=2300,  armor=200,  force=200, speed=200,
+      hp=2300,  armor=200,   force=200,  speed=200,
       weapon="swtor_lightsaber_double", weapon_style="double",
       salary=1500, promo_req="admin",
-      models={
-          "models/player/swtor/arsenic/templeguard/templeguard.mdl",
-      }},
+      models={"models/player/lgn/jedi master/jedi master.mdl"} },
 
     { rank=20, name="Grand Maître Jedi Guerrier",
-      hp=2600,  armor=400,  force=200, speed=190,
+      hp=2600,  armor=400,   force=200,  speed=190,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=1500, promo_req="admin",
-      models={
-          "models/player/valley/senya.mdl",
-      }},
+      models={"models/player/lgn/jedi master/jedi master.mdl"} },
 
-    -- Conseil des Légendes
+    -- ── CONSEIL DES LÉGENDES JEDI ──
     { rank=21, name="Conseiller Légende",
-      hp=2700,  armor=400,  force=230, speed=220,
+      hp=2700,  armor=400,   force=230,  speed=220,
       weapon="swtor_lightsaber", weapon_style="single",
       salary=3000, promo_req="admin",
       exclusive_aura="aura_legende_jedi",
-      models={
-          "models/player/valley/zakuul/zakuul_white.mdl",
-      }},
+      models={"models/player/valley/luke.mdl"} },
 
     { rank=22, name="Furie Légendaire Jedi",
-      hp=3500,  armor=500,  force=200, speed=220,
+      hp=3500,  armor=500,   force=200,  speed=220,
       weapon="swtor_lightsaber_dual", weapon_style="dual",
       salary=3000, promo_req="admin",
       exclusive_aura="aura_legende_jedi",
-      models={
-          "models/player/valley/zakuul/zakuul_knight.mdl",
-      }},
+      models={"models/player/valley/luke.mdl"} },
 
     { rank=23, name="Voix de la Force",
-      hp=8500,  armor=1500, force=350, speed=260,
+      hp=8500,  armor=1500,  force=350,  speed=260,
       weapon="swtor_lightsaber_double", weapon_style="double",
       salary=5000, promo_req="admin",
       exclusive_aura="aura_legende_jedi",
-      models={
-          "models/player/valley/zakuul/knight_honor_guard.mdl",
-      }},
+      models={"models/player/valley/luke.mdl"} },
 
     { rank=24, name="Légende Jedi",
       hp=75000, armor=25000, force=1500, speed=400,
       weapon="swtor_lightsaber_double", weapon_style="double",
       salary=10000, promo_req="admin",
       exclusive_aura="aura_legende_jedi",
-      models={
-          "models/player/valley/vitiate.mdl",
-      }},
+      models={"models/player/valley/luke.mdl"} },
 }
 
 -- ============================================================
@@ -468,46 +371,21 @@ SWTOR.Factions["mandalorien"] = {
 }
 
 SWTOR.Grades["mandalorien"] = {
-
-    { rank=1, name="Verd (Soldat)",
-      hp=400,  armor=50,  force=60,  speed=130,
-      weapon="swtor_blaster_dual", weapon_style="dual",
-      salary=100, promo_req="mod",
-      models={
-          "models/player/gingers_republic_red/gingers_republic_red_trooper.mdl",
-      }},
-
-    { rank=2, name="Mando'ad",
-      hp=600,  armor=80,  force=70,  speed=140,
-      weapon="swtor_blaster_dual", weapon_style="dual",
-      salary=150, promo_req="mod",
-      models={
-          "models/player/gingers_republic_red/gingers_republic_red_officer.mdl",
-      }},
-
-    { rank=3, name="Alor'ad (Capitaine)",
-      hp=900,  armor=120, force=80,  speed=150,
-      weapon="swtor_vibroblade", weapon_style="vibro",
-      salary=250, promo_req="mod",
-      models={
-          "models/player/gingers_republic_red/gingers_republic_red_commander.mdl",
-      }},
-
-    { rank=4, name="Alor (Chef de Clan)",
-      hp=1400, armor=200, force=100, speed=160,
-      weapon="swtor_vibroblade", weapon_style="vibro",
-      salary=500, promo_req="admin",
-      models={
-          "models/player/alpha/heavytrooper.mdl",
-      }},
-
-    { rank=5, name="Mand'alor",
-      hp=3000, armor=600, force=200, speed=200,
-      weapon="swtor_vibroblade", weapon_style="vibro",
-      salary=2000, promo_req="admin",
-      models={
-          "models/player/alpha/shae.mdl",
-      }},
+    { rank=1, name="Verd (Soldat)",       hp=400,  armor=50,  force=60,  speed=130, salary=100,
+      weapon="swtor_blaster_dual", weapon_style="dual", promo_req="mod",
+      models={"models/player/vengeance/mandalorian_blue/mandalorian_blue.mdl"} },
+    { rank=2, name="Mando'ad",            hp=600,  armor=80,  force=70,  speed=140, salary=150,
+      weapon="swtor_blaster_dual", weapon_style="dual", promo_req="mod",
+      models={"models/player/heracles421/mandalorians/mandalorianm.mdl"} },
+    { rank=3, name="Alor'ad (Capitaine)", hp=900,  armor=120, force=80,  speed=150, salary=250,
+      weapon="swtor_vibroblade",   weapon_style="vibro", promo_req="mod",
+      models={"models/player/vengeance/mandalorian_red/mandalorian_red.mdl"} },
+    { rank=4, name="Alor (Chef de Clan)",hp=1400, armor=200, force=100, speed=160, salary=500,
+      weapon="swtor_vibroblade",   weapon_style="vibro", promo_req="admin",
+      models={"models/player/deckboy/jango_pm/jango_pm.mdl"} },
+    { rank=5, name="Mand'alor",          hp=3000, armor=600, force=200, speed=200, salary=2000,
+      weapon="swtor_vibroblade",   weapon_style="vibro", promo_req="admin",
+      models={"models/player/deckboy/boba_pm/boba_pm.mdl"} },
 }
 
 -- ============================================================

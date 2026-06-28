@@ -35,6 +35,7 @@ local clientFiles = {
     "lua/core/client/cl_swtor_application.lua",
     "lua/core/client/cl_swtor_adminpanel.lua",
     "lua/core/client/cl_swtor_training.lua",
+    "lua/core/client/temp_find_models.lua", 
 }
 local count = 0
 for _, f in ipairs(clientFiles) do
