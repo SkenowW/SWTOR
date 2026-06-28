@@ -11,40 +11,40 @@ if CLIENT then return end
 SWTOR.NPCDefs = {
 
     korriban = {
-        { model = "models/swtor/sith/acolyte_m.mdl", class = "npc_combine_s",
+        { model = "models/player/sitharmor/sitharmor_pm.mdl", class = "npc_combine_s",
           pos = Vector(-1100, 600, 64), ang = Angle(0,180,0),
           name = "Garde Sith",  faction = "empire", hp = 150, dmg_mult = 1.0 },
-        { model = "models/swtor/sith/warrior_m.mdl",  class = "npc_combine_s",
+        { model = "models/player/malacore/swtor_tulak_pm/swtor_tulak.mdl",  class = "npc_combine_s",
           pos = Vector(-1300, 400, 64), ang = Angle(0,90,0),
           name = "Guerrier Sith", faction = "empire", hp = 200, dmg_mult = 1.2 },
-        { model = "models/swtor/imperial/trooper.mdl", class = "npc_combine_s",
+        { model = "models/player/gingers_sith_red/gingers_sith_red_trooper.mdl", class = "npc_combine_s",
           pos = Vector(-900,  850, 64), ang = Angle(0,270,0),
           name = "Soldat Impérial", faction = "empire", hp = 100, dmg_mult = 0.8 },
     },
 
     dromund_kaas = {
-        { model = "models/swtor/imperial/officer_m.mdl", class = "npc_combine_s",
+        { model = "models/player/gingers_sith_red/gingers_sith_red_officer.mdl", class = "npc_combine_s",
           pos = Vector(600, 300, 64), ang = Angle(0,0,0),
           name = "Officier Impérial", faction = "empire", hp = 120, dmg_mult = 1.0 },
-        { model = "models/swtor/imperial/trooper.mdl", class = "npc_combine_s",
+        { model = "models/player/gingers_sith_red/gingers_sith_red_trooper.mdl", class = "npc_combine_s",
           pos = Vector(900, 500, 64), ang = Angle(0,90,0),
           name = "Sentinelle Impériale", faction = "empire", hp = 100, dmg_mult = 0.8 },
     },
 
     coruscant = {
-        { model = "models/swtor/jedi/knight_m.mdl", class = "npc_metropolice",
+        { model = "models/player/lgn/jedi knight male/jedi knight male.mdl", class = "npc_metropolice",
           pos = Vector(300, 100, 64), ang = Angle(0,270,0),
           name = "Chevalier Jedi", faction = "republique", hp = 200, dmg_mult = 1.0 },
-        { model = "models/swtor/republic/trooper.mdl", class = "npc_metropolice",
+        { model = "models/player/gingers_republic_white/gingers_republic_white_trooper.mdl", class = "npc_metropolice",
           pos = Vector(100, 400, 64), ang = Angle(0,0,0),
           name = "Garde Républicain", faction = "republique", hp = 100, dmg_mult = 0.8 },
-        { model = "models/swtor/jedi/guardian_m.mdl", class = "npc_metropolice",
+        { model = "models/player/lgn/jedi guard/jedi guard.mdl", class = "npc_metropolice",
           pos = Vector(-200, 100, 64), ang = Angle(0,180,0),
           name = "Garde du Temple", faction = "republique", hp = 180, dmg_mult = 1.1 },
     },
 
     mandalore = {
-        { model = "models/swtor/mando/verd.mdl", class = "npc_combine_s",
+        { model = "models/player/vengeance/mandalorian_blue/mandalorian_blue.mdl", class = "npc_combine_s",
           pos = Vector(-100, -300, 64), ang = Angle(0,45,0),
           name = "Guerrier Mandalorien", faction = "mandalorien", hp = 220, dmg_mult = 1.3 },
     },
