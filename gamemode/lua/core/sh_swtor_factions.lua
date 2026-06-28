@@ -1,3 +1,34 @@
+-- ============================================================
+--  SW:TOR RP — FACTIONS, GRADES & STATS COMPLÈTES v3
+--  lua/autorun/sh_swtor_factions.lua
+--  Grades promouvables : Modérateurs (rangs de base + voies)
+--  Grades admin only   : Haut Commandement + Corps Empereur + Légendes Jedi
+-- ============================================================
+
+SWTOR = SWTOR or {}
+SWTOR.Factions = {}
+SWTOR.Grades   = {}
+
+-- ============================================================
+--  PERMISSIONS PAR RANG
+--  "mod"   = Modérateur peut promouvoir
+--  "admin" = Admin uniquement
+-- ============================================================
+
+-- ============================================================
+--  FACTION : EMPIRE SITH
+-- ============================================================
+SWTOR.Factions["empire"] = {
+    name        = "Empire Sith",
+    shortname   = "EMPIRE",
+    color       = Color(180, 20, 20),
+    description = "L'Empire Sith, gouverné par l'Empereur, repose sur la Force Obscure et la domination absolue.",
+    planet_home = "korriban",
+    planet_sec  = "dromund_kaas",
+    chat_prefix = "[EMPIRE]",
+    chat_color  = Color(220, 50, 50),
+}
+
 SWTOR.Grades["empire"] = {
 
     { rank=1,  name="Novice",
@@ -201,6 +232,20 @@ SWTOR.Grades["empire"] = {
       models={
           "models/player/malacore/swtor_tulak.mdl",
       }},
+}
+
+-- ============================================================
+--  FACTION : ORDRE JEDI / REPUBLIQUE
+-- ============================================================
+SWTOR.Factions["republique"] = {
+    name        = "Ordre Jedi",
+    shortname   = "JEDI",
+    color       = Color(30, 100, 200),
+    description = "L'Ordre Jedi, gardien de la paix et de la lumière, protège la République Galactique depuis des millénaires.",
+    planet_home = "coruscant",
+    planet_sec  = nil,
+    chat_prefix = "[JEDI]",
+    chat_color  = Color(80, 160, 255),
 }
 
 SWTOR.Grades["republique"] = {
@@ -408,6 +453,20 @@ SWTOR.Grades["republique"] = {
       }},
 }
 
+-- ============================================================
+--  FACTION : MANDALORIEN (inchangée)
+-- ============================================================
+SWTOR.Factions["mandalorien"] = {
+    name        = "Clan Mandalorien",
+    shortname   = "MANDO",
+    color       = Color(180, 140, 20),
+    description = "Guerriers nomades liés par le code Resol'nare. Honneur, combat et loyauté au clan avant tout.",
+    planet_home = "mandalore",
+    planet_sec  = nil,
+    chat_prefix = "[MANDO]",
+    chat_color  = Color(220, 180, 40),
+}
+
 SWTOR.Grades["mandalorien"] = {
 
     { rank=1, name="Verd (Soldat)",
@@ -450,3 +509,105 @@ SWTOR.Grades["mandalorien"] = {
           "models/player/alpha/shae.mdl",
       }},
 }
+
+-- ============================================================
+--  HELPERS
+-- ============================================================
+
+function SWTOR.GetGrade(factionKey, rankIndex)
+    local grades = SWTOR.Grades[factionKey]
+    if not grades then return nil end
+    return grades[rankIndex]
+end
+
+function SWTOR.GetMaxGrade(factionKey)
+    local grades = SWTOR.Grades[factionKey]
+    return grades and #grades or 0
+end
+
+function SWTOR.GetNextGrade(factionKey, rankIndex)
+    return SWTOR.GetGrade(factionKey, rankIndex + 1)
+end
+
+-- Vérifie si un joueur peut promouvoir selon promo_req
+function SWTOR.CanPromote(promoter, factionKey, targetRank)
+    local grade = SWTOR.GetGrade(factionKey, targetRank)
+    if not grade then return false end
+    if grade.promo_req == "admin" then
+        return SWTOR.IsAdmin(promoter)
+    end
+    -- "mod" = IsSuperAdmin ou custom perm ULX
+    return SWTOR.IsAdmin(promoter) or promoter:IsSuperAdmin() or
+           (ULib and ULib.ucl and ULib.ucl.authedUsers and
+            ULib.ucl.authedUsers[promoter:SteamID()] ~= nil)
+end
+
+-- Retourner tous les grades d'une voie
+function SWTOR.GetVoieGrades(factionKey, voie)
+    local grades = SWTOR.Grades[factionKey]
+    if not grades then return {} end
+    local result = {}
+    for _, g in ipairs(grades) do
+        if g.voie == voie then table.insert(result, g) end
+    end
+    return result
+end
+
+-- Appliquer les stats d'un grade directement
+function SWTOR.ApplyGradeStats(ply)
+    if not IsValid(ply) then return end
+    if CLIENT then return end
+    local faction = ply.swtor_faction or ""
+    local grade   = SWTOR.GetGrade(faction, ply.swtor_grade or 1)
+    if not grade then return end
+
+    -- HP
+    local maxHP = math.min(grade.hp, 75000)
+    ply:SetMaxHealth(maxHP)
+    ply:SetHealth(maxHP)
+
+    -- Armure (GMod cap = 100, on stocke la vraie valeur en NWInt)
+    local realArmor = grade.armor or 0
+    ply:SetNWInt("swtor_real_armor", realArmor)
+    ply:SetArmor(math.min(realArmor, 100))  -- UI seulement
+
+    -- Vitesse
+    local spd = grade.speed or 200
+    ply:SetWalkSpeed(spd * 0.55)
+    ply:SetRunSpeed(spd)
+    ply:SetCrouchedWalkSpeed(0.35)
+
+    -- Arme de grade automatique
+    if grade.weapon then
+        -- Retirer les anciennes armes de sabre
+        for _, wclass in ipairs({"swtor_lightsaber","swtor_lightsaber_dual",
+                                  "swtor_lightsaber_double","swtor_vibroblade"}) do
+            local w = ply:GetWeapon(wclass)
+            if IsValid(w) then ply:StripWeapon(wclass) end
+        end
+        ply:Give(grade.weapon)
+        ply:SelectWeapon(grade.weapon)
+    end
+
+    -- Aura exclusive au grade
+    if grade.exclusive_aura and SWTOR.BroadcastAura then
+        ply.swtor_aura = grade.exclusive_aura
+        SWTOR.BroadcastAura(ply, grade.exclusive_aura)
+    end
+end
+
+-- Stats Force/Speed pour les formules de combat
+function SWTOR.GetCombatStats(ply)
+    local faction = ply.swtor_faction or ""
+    local grade   = SWTOR.GetGrade(faction, ply.swtor_grade or 1)
+    if not grade then return 50, 100, 50 end
+    return grade.force or 50, grade.speed or 100, grade.hp or 250
+end
+
+-- Nombre de grades Sith : 24 | Jedi : 24 | Mando : 5
+local total = 0
+for _, grades in pairs(SWTOR.Grades) do total = total + #grades end
+print("[SW:TOR RP] Factions & Grades chargés ✓ (" .. total .. " grades au total)")
+print("  Empire: " .. #SWTOR.Grades["empire"] .. " grades")
+print("  Jedi:   " .. #SWTOR.Grades["republique"] .. " grades")
+print("  Mando:  " .. #SWTOR.Grades["mandalorien"] .. " grades")
