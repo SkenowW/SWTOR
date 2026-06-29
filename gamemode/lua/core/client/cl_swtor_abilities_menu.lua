@@ -205,10 +205,18 @@ hook.Add("HUDPaint", "SWTOR_QuickBar", function()
         local grade = ply:GetNWInt("swtor_grade", 1)
         for reqGrade, ab in pairs(cls.abilities) do
             if grade >= reqGrade and #QuickBar < 9 then
-                table.insert(QuickBar, ab)
+                -- On recrée la table en ajoutant explicitement le reqGrade
+                local abData = {
+                    id = ab.id,
+                    icon = ab.icon,
+                    name = ab.name,
+                    grade = reqGrade
+                }
+                table.insert(QuickBar, abData)
             end
         end
-        table.sort(QuickBar, function(a,b) return a.grade < b.grade end)
+        -- On ajoute un "or 0" par sécurité
+        table.sort(QuickBar, function(a,b) return (a.grade or 0) < (b.grade or 0) end)
     end
 
     local sw, sh   = ScrW(), ScrH()
