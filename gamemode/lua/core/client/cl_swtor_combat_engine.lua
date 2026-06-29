@@ -305,15 +305,15 @@ hook.Add("CalcMainActivity", "SWTOR_StanceAnim", function(ply, vel)
     -- Choisir l'animation de hold selon la posture
     -- (utilise les holdtypes GMod pour changer la pose)
     if animSet == "offensive" then
-        ply:SetHoldType("melee2")    -- Sabre levé
+        wep:SetHoldType("melee2")    -- Sabre levé
     elseif animSet == "defensive" then
-        ply:SetHoldType("knife")     -- Position basse
+        wep:SetHoldType("knife")     -- Position basse
     elseif animSet == "dual" then
-        ply:SetHoldType("duel")      -- Deux mains
+        wep:SetHoldType("duel")      -- Deux mains
     elseif animSet == "reverse" then
-        ply:SetHoldType("melee")     -- Prise inversée
+        wep:SetHoldType("melee")     -- Prise inversée
     else
-        ply:SetHoldType("melee2")    -- Standard
+        wep:SetHoldType("melee2")    -- Standard
     end
 end)
 
