@@ -40,8 +40,9 @@ net.Receive("SWTOR_BuyItem", function(len, ply)
     local itemId = net.ReadString()
     local ok, data = SWTOR.Shop.CanBuy(ply, itemId)
 
-    net.Start("SWTOR_BuyResult")
+    -- S'il y a une erreur, on l'envoie tout de suite
     if not ok then
+        net.Start("SWTOR_BuyResult")
         net.WriteString("error")
         net.WriteString(data)
         net.Send(ply)
@@ -52,6 +53,8 @@ net.Receive("SWTOR_BuyItem", function(len, ply)
     -- Déduire crédits
     ply.swtor_credits = (ply.swtor_credits or 0) - item.price
     SWTOR.SavePlayer(ply)
+    
+    -- Attention : Cette fonction contient un net.Start("SWTOR_SyncData")
     SWTOR.SyncPlayerData(ply)
 
     -- Donner l'item
@@ -59,7 +62,6 @@ net.Receive("SWTOR_BuyItem", function(len, ply)
         ply:Give(item.weapon)
         SWTOR.Notify(ply, "⚔ " .. item.name .. " ajouté à votre inventaire.", "success")
     elseif item.use_fn then
-        -- Consommable: ajouter à l'inventaire
         local inv = GetInventory(ply)
         inv[itemId] = (inv[itemId] or 0) + 1
         SaveInventory(ply)
@@ -70,6 +72,8 @@ net.Receive("SWTOR_BuyItem", function(len, ply)
         SWTOR.Notify(ply, "🏅 Titre obtenu: " .. item.title, "success")
     end
 
+    -- MAINTENANT on démarre notre message de succès, sans qu'il soit écrasé
+    net.Start("SWTOR_BuyResult")
     net.WriteString("success")
     net.WriteString("Achat réussi: " .. item.name .. " (-" .. item.price .. " cr)")
     net.Send(ply)

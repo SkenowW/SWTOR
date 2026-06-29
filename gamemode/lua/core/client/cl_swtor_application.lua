@@ -143,68 +143,76 @@ concommand.Add("swtor_candidater", OpenApplicationMenu)
 -- ============================================================
 --  INVENTAIRE CLIENT
 -- ============================================================
-local function OpenInventory()
-    net.Start("SWTOR_RequestInventory") net.SendToServer()
-    timer.Simple(0.3, function()
-        if IsValid(SWTOR_InvMenu) then SWTOR_InvMenu:Remove() end
-        local sw, sh = ScrW(), ScrH()
-        local W, H   = 400, 400
-        local frame  = vgui.Create("DFrame")
-        frame:SetPos((sw-W)/2, (sh-H)/2)
-        frame:SetSize(W, H)
-        frame:SetTitle("Inventaire")
-        frame:MakePopup()
-        SWTOR_InvMenu = frame
-        frame.Paint = function(s,w,h)
-            draw.RoundedBox(8,0,0,w,h,Color(8,10,22,245))
-        end
 
-        local scroll = vgui.Create("DScrollPanel", frame)
-        scroll:Dock(FILL) scroll:DockMargin(5,28,5,5)
-
-        local hasItems = false
-        for itemId, qty in pairs(Inventory) do
-            if qty and qty > 0 then
-                hasItems = true
-                local item = SWTOR and SWTOR.Shop and SWTOR.Shop.Items[itemId]
-                local name = item and item.name or itemId
-
-                local row = vgui.Create("DButton", scroll)
-                row:SetText("") row:SetHeight(48) row:Dock(TOP) row:DockMargin(0,2,0,0)
-
-                local iid = itemId
-                row.Paint = function(s,w,h)
-                    draw.RoundedBox(5,0,0,w,h,Color(15,18,35,200))
-                    draw.SimpleText(name, "SWTOR_HUD_Medium", 12, h/2,
-                        Color(220,220,220), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-                    draw.SimpleText("x" .. qty, "SWTOR_HUD_Big", w-80, h/2,
-                        Color(100,220,100), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
-                    draw.RoundedBox(4, w-65, (h-24)/2, 58, 24, Color(50,100,50,180))
-                    draw.SimpleText("UTILISER", "SWTOR_HUD_Small", w-36, h/2,
-                        Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
-                end
-                row.DoClick = function()
-                    net.Start("SWTOR_UseItem")
-                        net.WriteString(iid)
-                    net.SendToServer()
-                    frame:Remove()
-                end
-            end
-        end
-
-        if not hasItems then
-            local lbl = vgui.Create("DLabel", scroll)
-            lbl:Dock(FILL)
-            lbl:SetText("Inventaire vide.\nAchetez des consommables dans la boutique.")
-            lbl:SetFont("SWTOR_HUD_Medium")
-            lbl:SetContentAlignment(5)
-            lbl:SetTextColor(Color(140,140,140))
-        end
-    end)
+-- On demande l'inventaire au serveur
+local function RequestInventory()
+    net.Start("SWTOR_RequestInventory") 
+    net.SendToServer()
 end
 
-concommand.Add("swtor_inventory",  OpenInventory)
-concommand.Add("swtor_inventaire", OpenInventory)
+concommand.Add("swtor_inventory",  RequestInventory)
+concommand.Add("swtor_inventaire", RequestInventory)
+
+-- Le serveur nous répond, on construit l'interface
+net.Receive("SWTOR_SendInventory", function()
+    -- On lit le JSON et on le transforme en table
+    local invJSON = net.ReadString()
+    local Inventory = util.JSONToTable(invJSON) or {}
+
+    if IsValid(SWTOR_InvMenu) then SWTOR_InvMenu:Remove() end
+    
+    local sw, sh = ScrW(), ScrH()
+    local W, H   = 400, 400
+    local frame  = vgui.Create("DFrame")
+    frame:SetPos((sw-W)/2, (sh-H)/2)
+    frame:SetSize(W, H)
+    frame:SetTitle("Inventaire")
+    frame:MakePopup()
+    SWTOR_InvMenu = frame
+    frame.Paint = function(s,w,h)
+        draw.RoundedBox(8,0,0,w,h,Color(8,10,22,245))
+    end
+
+    local scroll = vgui.Create("DScrollPanel", frame)
+    scroll:Dock(FILL) scroll:DockMargin(5,28,5,5)
+
+    local hasItems = false
+    -- La boucle utilise maintenant notre table sécurisée 'Inventory'
+    for itemId, qty in pairs(Inventory) do
+        if qty and qty > 0 then
+            hasItems = true
+            local item = SWTOR and SWTOR.Shop and SWTOR.Shop.Items and SWTOR.Shop.Items[itemId]
+            local name = item and item.name or itemId
+
+            local row = vgui.Create("DButton", scroll)
+            row:SetText("") row:SetHeight(48) row:Dock(TOP) row:DockMargin(0,2,0,0)
+
+            local iid = itemId
+            row.Paint = function(s,w,h)
+                draw.RoundedBox(5,0,0,w,h,Color(15,18,35,200))
+                draw.SimpleText(name, "SWTOR_HUD_Medium", 12, h/2, Color(220,220,220), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+                draw.SimpleText("x" .. qty, "SWTOR_HUD_Big", w-80, h/2, Color(100,220,100), TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
+                draw.RoundedBox(4, w-65, (h-24)/2, 58, 24, Color(50,100,50,180))
+                draw.SimpleText("UTILISER", "SWTOR_HUD_Small", w-36, h/2, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
+            end
+            row.DoClick = function()
+                net.Start("SWTOR_UseItem")
+                    net.WriteString(iid)
+                net.SendToServer()
+                frame:Remove()
+            end
+        end
+    end
+
+    if not hasItems then
+        local lbl = vgui.Create("DLabel", scroll)
+        lbl:Dock(FILL)
+        lbl:SetText("Inventaire vide.\nAchetez des consommables dans la boutique.")
+        lbl:SetFont("SWTOR_HUD_Medium")
+        lbl:SetContentAlignment(5)
+        lbl:SetTextColor(Color(140,140,140))
+    end
+end)
 
 print("[SW:TOR] Candidature & Inventaire client chargés ✓")
 print("  swtor_apply | swtor_inventory")

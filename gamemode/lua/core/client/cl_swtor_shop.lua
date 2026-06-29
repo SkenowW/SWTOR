@@ -5,12 +5,6 @@
 
 if SERVER then return end
 
-local Inventory = {}
-
-net.Receive("SWTOR_SendInventory", function()
-    Inventory = util.JSONToTable(net.ReadString()) or {}
-end)
-
 net.Receive("SWTOR_BuyResult", function()
     local status = net.ReadString()
     local msg    = net.ReadString()
@@ -25,9 +19,6 @@ local function OpenShop()
         chat.AddText(Color(255,150,50), "[SW:TOR] Rejoignez une faction d'abord.")
         return
     end
-
-    -- Demander inventaire à jour
-    net.Start("SWTOR_RequestInventory") net.SendToServer()
 
     if IsValid(SWTOR_ShopPanel) then SWTOR_ShopPanel:Remove() end
 
